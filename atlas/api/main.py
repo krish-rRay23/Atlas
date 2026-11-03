@@ -426,18 +426,20 @@ def review_claim(
 # --- BENCHMARKS & EVALUATION ---
 @app.get("/api/evaluation/headline")
 def get_headline_benchmarks():
-    """Get latest headline benchmark results for T²-RAGBench, FinanceMath, and AVeriTeC."""
+    """Get latest headline benchmark results for FinanceBench, FinQA, and T²-RAGBench."""
     summary_path = Path("data/evaluation/headline_benchmarks_summary.json")
     if summary_path.exists():
         with open(summary_path, "r", encoding="utf-8") as f:
             return json.load(f)
     suite = HeadlineBenchmarkSuite()
-    t2_res = suite.run_t2_ragbench(config="TAT-DQA", split="dev", max_samples=25, retrieval_strategy="hybrid")
-    fm_res = suite.run_financemath(split="test", max_samples=25)
+    fb = suite.run_financebench(retrieval_strategy="atlas")
+    finqa = suite.run_finqa(max_samples=100)
+    t2_res = suite.run_t2_ragbench(config="TAT-DQA", split="dev", max_samples=100, retrieval_strategy="atlas")
     av_res = suite.run_averitec(split="dev", max_samples=25)
     return {
+        "financebench": fb.model_dump(),
+        "finqa": finqa.model_dump(),
         "t2_ragbench": t2_res.model_dump(),
-        "financemath": fm_res.model_dump(),
         "averitec": av_res.model_dump()
     }
 
@@ -445,16 +447,18 @@ def get_headline_benchmarks():
 def trigger_headline_benchmark_run(
     current_user: Dict[str, Any] = Depends(require_role(["admin"]))
 ):
-    """Trigger full run of headline benchmarks (T²-RAGBench, FinanceMath, AVeriTeC)."""
+    """Trigger full run of headline benchmarks (FinanceBench, FinQA, T²-RAGBench)."""
     suite = HeadlineBenchmarkSuite()
-    t2_res = suite.run_t2_ragbench(config="TAT-DQA", split="dev", max_samples=100, retrieval_strategy="hybrid")
-    fm_res = suite.run_financemath(split="test", max_samples=100)
+    fb = suite.run_financebench(retrieval_strategy="atlas")
+    finqa = suite.run_finqa(max_samples=None)
+    t2_res = suite.run_t2_ragbench(config="TAT-DQA", split="dev", max_samples=None, retrieval_strategy="atlas")
     av_res = suite.run_averitec(split="dev", max_samples=100)
     reg_res = suite.run_internal_claim_regression()
 
     summary = {
+        "financebench": fb.model_dump(),
+        "finqa": finqa.model_dump(),
         "t2_ragbench": t2_res.model_dump(),
-        "financemath": fm_res.model_dump(),
         "averitec": av_res.model_dump(),
         "internal_claim_regression": reg_res.model_dump()
     }

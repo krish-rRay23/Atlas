@@ -1,10 +1,10 @@
 {
-  "run_id": "RUN-AVERITEC-1793710477",
+  "run_id": "RUN-AVERITEC-1793713093",
   "metrics": {
     "verdict_accuracy": 0.58,
     "macro_f1": 0.4303,
     "total_claims": 100,
-    "latency_ms_per_claim": 1.75,
+    "latency_ms_per_claim": 4.06,
     "estimated_cost_usd": 0.0
   },
   "per_class_breakdown": {

@@ -38,3 +38,4 @@ class DenseRetriever:
         scored_pairs = list(zip(self.doc_ids, [float(s) for s in similarities]))
         scored_pairs.sort(key=lambda x: x[1], reverse=True)
         return scored_pairs[:top_k]
+

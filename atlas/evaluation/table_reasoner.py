@@ -1,12 +1,25 @@
-"""ATLAS Table & Document Numerical Reasoning Engine for TAT-QA and T²-RAGBench.
+"""ATLAS Table & Document Numerical Reasoning Engine for TAT-QA, T²-RAGBench, and FinanceBench.
 
-Performs structured 2D table parsing, Markdown table extraction, row-column coordinate indexing,
-question intent classification, deterministic arithmetic execution,
-and scale normalization without access to gold labels or derivations.
+Performs structured 2D table parsing, Markdown table extraction, text financial statement parsing,
+row-column coordinate indexing, financial concept synonym mapping, question intent classification,
+deterministic arithmetic execution, and scale normalization without access to gold labels or derivations.
 """
 
 import re
 from typing import Dict, Any, List, Optional, Tuple, Union
+
+FINANCIAL_SYNONYMS = {
+    "capital expenditure": ["purchases of property", "property, plant and equipment", "pp&e", "additions to property"],
+    "capex": ["purchases of property", "property, plant and equipment", "pp&e"],
+    "net ppne": ["property, plant and equipment", "pp&e", "property plant"],
+    "ppne": ["property, plant and equipment", "pp&e"],
+    "revenue": ["net sales", "total revenues", "operating revenues", "revenue"],
+    "operating income": ["operating profit", "operating earnings", "income from operations"],
+    "operating cash flow": ["cash provided by operating", "cash from operations", "operating activities"],
+    "net income": ["net earnings", "net loss", "income including"],
+    "debt": ["long-term debt", "borrowings", "short-term debt", "notes payable"],
+    "cash": ["cash and cash equivalents", "marketable securities"]
+}
 
 class TableDocumentReasoner:
     def __init__(self, table_raw: Optional[Any] = None, paragraphs: Optional[List[Dict[str, Any]]] = None):
@@ -28,7 +41,6 @@ class TableDocumentReasoner:
         if val is None:
             return None
         s = str(val).strip()
-        # Handle parenthesized negative numbers e.g. (12.4) -> -12.4
         is_neg = False
         if s.startswith("(") and s.endswith(")"):
             is_neg = True
@@ -37,7 +49,6 @@ class TableDocumentReasoner:
             is_neg = True
             s = s[1:].strip()
 
-        # Remove currency symbols, commas, percent
         s = re.sub(r"[\$,%]", "", s).strip()
         try:
             num = float(s)
@@ -46,8 +57,53 @@ class TableDocumentReasoner:
             return None
 
     @staticmethod
-    def parse_markdown_context(context_str: str) -> Tuple[List[List[Any]], List[Dict[str, Any]]]:
-        """Parse raw markdown text containing tables and paragraphs into structured grid and paragraphs."""
+    def parse_financial_text_table(text: str) -> List[List[Any]]:
+        """Parse raw plain-text financial statements (vertical space-delimited text) into a 2D table grid."""
+        lines = [l.strip() for l in text.split("\n") if l.strip()]
+        years = []
+        y_indices = []
+        for idx, l in enumerate(lines):
+            if re.match(r"^(19\d\d|20\d\d)$", l):
+                years.append(int(l))
+                y_indices.append(idx)
+            elif years and idx > y_indices[-1] + 3:
+                break
+
+        if len(years) < 2:
+            return []
+
+        num_cols = len(years)
+        grid = [["Metric"] + [str(y) for y in years]]
+
+        i = y_indices[-1] + 1
+        while i < len(lines):
+            line = lines[i]
+            if re.search(r"[a-zA-Z]", line):
+                label = line
+                vals = []
+                j = i + 1
+                while j < len(lines) and len(vals) < num_cols:
+                    cand = lines[j]
+                    clean = re.sub(r"[\$,]", "", cand).strip()
+                    if re.match(r"^\(?\d+(?:\.\d+)?\)?$", clean):
+                        vals.append(clean)
+                        j += 1
+                    elif re.search(r"[a-zA-Z]", cand):
+                        break
+                    else:
+                        j += 1
+                if len(vals) == num_cols:
+                    grid.append([label] + vals)
+                    i = j
+                else:
+                    i += 1
+            else:
+                i += 1
+        return grid
+
+    @classmethod
+    def parse_markdown_context(cls, context_str: str) -> Tuple[List[List[Any]], List[Dict[str, Any]]]:
+        """Parse raw markdown text or plain-text context into structured grid and paragraphs."""
         lines = context_str.split("\n")
         table_lines = []
         paragraph_lines = []
@@ -55,7 +111,6 @@ class TableDocumentReasoner:
         for l in lines:
             s = l.strip()
             if s.startswith("|") and s.endswith("|"):
-                # Skip separator lines e.g. |---|---|
                 if re.match(r"^\|[\s\:\-\|]+\|$", s):
                     continue
                 cells = [c.strip() for c in s.split("|")[1:-1]]
@@ -63,6 +118,12 @@ class TableDocumentReasoner:
             else:
                 if s:
                     paragraph_lines.append({"order": len(paragraph_lines) + 1, "text": s})
+
+        # If no pipe markdown table found, attempt plain-text financial table extraction
+        if not table_lines:
+            text_grid = cls.parse_financial_text_table(context_str)
+            if text_grid:
+                table_lines = text_grid
 
         return table_lines, paragraph_lines
 
@@ -80,33 +141,24 @@ class TableDocumentReasoner:
             row = table_raw[r_idx]
             for c_idx, cell in enumerate(row):
                 c_str = str(cell).strip()
-                # Check for year
                 match = re.search(r"\b(20\d\d)\b", c_str)
                 if match:
-                    yr = match.group(1)
-                    if yr not in year_cols:
-                        year_cols[yr] = c_idx
+                    year_cols[match.group(1)] = c_idx
 
-                # Check for Change / % Change column
-                if any(kw in c_str.lower() for kw in ["change", "% change", "percentage change", "chg"]):
+                if any(k in c_str.lower() for k in ["change (%)", "% change", "change %", "chg %", "growth (%)"]):
                     change_cols[c_str] = c_idx
-
-        if len(table_raw) > 0:
-            headers = [str(c).strip() for c in table_raw[0]]
 
         # Map row labels
         rows: Dict[str, int] = {}
-        for r_idx in range(len(table_raw)):
-            row = table_raw[r_idx]
-            if row and len(row) > 0:
+        for r_idx, row in enumerate(table_raw):
+            if row:
                 label = str(row[0]).strip().lower()
-                if label:
-                    rows[label] = r_idx
+                rows[label] = r_idx
 
         return {
+            "headers": headers,
             "year_cols": year_cols,
             "change_cols": change_cols,
-            "headers": headers,
             "rows": rows,
             "grid": table_raw
         }
@@ -143,7 +195,9 @@ class TableDocumentReasoner:
         # 1. Determine Scale
         table_str = " ".join(" ".join(str(c) for c in row) for row in grid).lower()
         pred_scale = ""
-        if "percent" in q_lower or "%" in q_lower or "percentage" in q_lower:
+        if "billion" in q_lower or "in billions" in table_str:
+            pred_scale = "billion"
+        elif "percent" in q_lower or "%" in q_lower or "percentage" in q_lower:
             pred_scale = "percent"
         elif "in millions" in table_str or "in million" in table_str or "millions" in q_lower:
             pred_scale = "million"
@@ -158,11 +212,16 @@ class TableDocumentReasoner:
         is_diff = not is_pct_change and any(p in q_lower for p in ["what is the change", "difference", "how much did", "increase", "decrease", "change in", "amount of change"])
         is_extreme_yr = any(p in q_lower for p in ["in which year", "which year", "what year"]) and any(p in q_lower for p in ["largest", "highest", "smallest", "lowest", "max", "min", "greatest"])
 
+        # Expand question tokens with financial concept synonyms
+        q_tokens = [w for w in re.findall(r"\w+", q_lower) if len(w) > 2 and w not in ["what", "which", "amount", "total", "were", "from", "have", "year", "change", "percentage", "rate", "between", "group"]]
+        for syn_key, expansions in FINANCIAL_SYNONYMS.items():
+            if syn_key in q_lower:
+                for exp in expansions:
+                    q_tokens.extend(exp.split())
+
         # Find best matching row in table
         best_row_idx = None
         best_row_score = 0
-        q_tokens = [w for w in re.findall(r"\w+", q_lower) if len(w) > 2 and w not in ["what", "which", "amount", "total", "were", "from", "have", "year", "change", "percentage", "rate", "between", "group"]]
-
         for r_idx, row in enumerate(grid):
             r_label = str(row[0]).lower() if row else ""
             score = sum(1 for tok in q_tokens if tok in r_label)
@@ -280,8 +339,14 @@ class TableDocumentReasoner:
             if target_col is not None and target_col < len(row):
                 raw_val = str(row[target_col]).strip()
                 if raw_val:
-                    # Clean trailing footnote characters like 532.0¹
                     raw_clean = re.sub(r"[^\d\.\,\-\$\%]", "", raw_val)
+                    clean_f = self.clean_cell_to_float(raw_clean or raw_val)
+                    if clean_f is not None:
+                        # Normalize negative values e.g. capex reported as (1577) -> 1577
+                        ans_f = abs(clean_f) if ("expenditure" in q_lower or "spent" in q_lower or "paid" in q_lower) else clean_f
+                        if "billion" in q_lower and "million" in table_str:
+                            ans_f = round(ans_f / 1000.0, 2)
+                        return {"answer": f"{ans_f:.2f}" if isinstance(ans_f, float) and ans_f % 1 != 0 else str(int(ans_f)), "scale": pred_scale}
                     return {"answer": raw_clean or raw_val, "scale": pred_scale}
 
         # --- BRANCH E: Multi-year query ("In which years...") ---
@@ -302,7 +367,6 @@ class TableDocumentReasoner:
                     best_sent = s.strip()
 
         if best_sent and best_p_score >= 2:
-            # Extract number if question asks for amount/rate
             nums = re.findall(r"[-+]?\d*\.?\d+", best_sent)
             if nums:
                 return {"answer": nums[0], "scale": pred_scale}

@@ -67,3 +67,4 @@ class RetrievalEvaluator:
             "ndcg_at_5": round(sum(ndcgs_5) / n, 4),
             "total_queries": len(queries_with_targets)
         }
+

@@ -665,29 +665,32 @@ elif selected_section == "8. Evaluation Lab":
     with tab_headline:
         st.markdown("""
         Evaluated on the full official evaluation splits of three recognized public research benchmarks:
-        1. **T²-RAGBench** (`G4KMU/t2-ragbench`): Multimodal Text-and-Table Financial RAG (Retrieval + QA).
-        2. **FinanceMath** (`yale-nlp/FinanceMath`): Knowledge-Intensive Financial Math across 7 CFA Topics.
-        3. **AVeriTeC** (`pminervini/averitec`): Real-World Claim Verification with Web Evidence across 4 Verdict Classes.
+        1. **FinanceBench** (`PatronusAI/financebench`): Financial Document QA & Evidence Attribution (150 Samples, CC BY-NC 4.0).
+        2. **FinQA** (`EMNLP 2021`): Autonomous Program Synthesis & Numerical Reasoning (All 1,147 Test Samples).
+        3. **T²-RAGBench** (`G4KMU/t2-ragbench`): Multimodal Text-and-Table Financial RAG (All 1,142 Dev Samples, Zero Oracle Fallback).
+        4. **AVeriTeC (Diagnostic)** (`pminervini/averitec`): Real-World Claim Verification with Web Evidence (4 Verdict Classes).
         """)
 
         h_cols = st.columns([1, 1, 2])
         with h_cols[0]:
-            if st.button("🚀 Re-Run Headline Benchmarks (Full)", type="primary", use_container_width=True):
-                with st.spinner("Executing T²-RAGBench, FinanceMath, and AVeriTeC..."):
+            if st.button("🚀 Re-Run Official Benchmarks (Full)", type="primary", use_container_width=True):
+                with st.spinner("Executing FinanceBench (150), FinQA (1,147), and T²-RAGBench (1,142)..."):
                     suite = HeadlineBenchmarkSuite()
-                    t2 = suite.run_t2_ragbench(config="TAT-DQA", split="dev", max_samples=100, retrieval_strategy="hybrid")
-                    fm = suite.run_financemath(split="test", max_samples=100)
+                    fb = suite.run_financebench(retrieval_strategy="atlas")
+                    finqa = suite.run_finqa(max_samples=None)
+                    t2 = suite.run_t2_ragbench(config="TAT-DQA", split="dev", max_samples=None, retrieval_strategy="atlas")
                     av = suite.run_averitec(split="dev", max_samples=100)
                     reg = suite.run_internal_claim_regression()
                     summary_path = Path("data/evaluation/headline_benchmarks_summary.json")
                     with open(summary_path, "w", encoding="utf-8") as f:
                         json.dump({
+                            "financebench": fb.model_dump(),
+                            "finqa": finqa.model_dump(),
                             "t2_ragbench": t2.model_dump(),
-                            "financemath": fm.model_dump(),
                             "averitec": av.model_dump(),
                             "internal_claim_regression": reg.model_dump()
                         }, f, indent=2)
-                    st.success("Full headline benchmarks completed!")
+                    st.success("Official public benchmark evaluation completed!")
                     st.rerun()
 
         summary_file = Path("data/evaluation/headline_benchmarks_summary.json")
@@ -695,25 +698,68 @@ elif selected_section == "8. Evaluation Lab":
             with open(summary_file, "r", encoding="utf-8") as f:
                 h_data = json.load(f)
 
+            fb_data = h_data.get("financebench", {})
+            finqa_data = h_data.get("finqa", {})
             t2_data = h_data.get("t2_ragbench", {})
-            fm_data = h_data.get("financemath", {})
             av_data = h_data.get("averitec", {})
 
             st.divider()
 
-            # --- BENCHMARK 1: T²-RAGBENCH ---
-            st.subheader("1. T²-RAGBench: Multimodal Text-and-Table Financial RAG")
-            st.caption(f"Dataset: {t2_data.get('dataset_version', 'G4KMU/t2-ragbench')} | Samples: {t2_data.get('sample_count', 100)}")
-            
+            # --- BENCHMARK 1: FINANCEBENCH ---
+            st.subheader("1. FinanceBench: Financial Document QA & Evidence Attribution")
+            st.caption(f"Dataset: {fb_data.get('dataset_version', 'PatronusAI/financebench')} | Evaluated: {fb_data.get('sample_count', 150)} Questions")
+
+            fb_m = fb_data.get("metrics", {})
+            bc1, bc2, bc3, bc4 = st.columns(4)
+            bc1.metric("Evidence Attribution", f"{fb_m.get('evidence_attribution_accuracy', 0)*100:.1f}%")
+            bc2.metric("Retrieval MRR (ATLAS)", f"{fb_m.get('retrieval_mrr', 0):.4f}")
+            bc3.metric("Recall@5", f"{fb_m.get('retrieval_recall_at_5', 0)*100:.1f}%")
+            bc4.metric("Avg Latency", f"{fb_m.get('latency_ms_per_question', 0):.1f} ms")
+
+            st.markdown("#### Retrieval Strategy Comparison (FinanceBench 10-K/10-Q Corpus)")
+            fb_ret_comps = fb_data.get("details", {}).get("retrieval_comparisons", {})
+            if fb_ret_comps:
+                fb_rows = []
+                for strat, s_metrics in fb_ret_comps.items():
+                    fb_rows.append({
+                        "Retrieval Strategy": strat.upper(),
+                        "Recall@1": f"{s_metrics.get('recall_at_1', 0)*100:.1f}%",
+                        "Recall@3": f"{s_metrics.get('recall_at_3', 0)*100:.1f}%",
+                        "Recall@5": f"{s_metrics.get('recall_at_5', 0)*100:.1f}%",
+                        "MRR": f"{s_metrics.get('mrr', 0):.4f}",
+                        "nDCG@5": f"{s_metrics.get('ndcg_at_5', 0):.4f}"
+                    })
+                st.table(pd.DataFrame(fb_rows))
+
+            st.divider()
+
+            # --- BENCHMARK 2: FINQA ---
+            st.subheader("2. FinQA: Multi-Step Program Synthesis & Execution")
+            st.caption(f"Dataset: {finqa_data.get('dataset_version', 'EMNLP 2021 Official Test Split')} | Evaluated: All {finqa_data.get('sample_count', 1147)} Test Samples")
+
+            fq_m = finqa_data.get("metrics", {})
+            qc1, qc2, qc3, qc4 = st.columns(4)
+            qc1.metric("Execution Success Rate", f"{fq_m.get('execution_success_rate', 0)*100:.1f}%")
+            qc2.metric("Execution Answer Accuracy", f"{fq_m.get('execution_accuracy', 0)*100:.2f}%")
+            qc3.metric("Program Exact Match", f"{fq_m.get('program_exact_match', 0)*100:.2f}%")
+            qc4.metric("Avg Latency", f"{fq_m.get('latency_ms_per_sample', 0):.1f} ms")
+            st.caption("ℹ️ Benchmark Integrity: The predictor synthesizes programs from question and table text with zero reference-solution or gold-program access. All 1,147 test samples are executed in a safe restricted DSL math sandbox.")
+
+            st.divider()
+
+            # --- BENCHMARK 3: T²-RAGBENCH ---
+            st.subheader("3. T²-RAGBench: Multimodal Text-and-Table Financial RAG")
+            st.caption(f"Dataset: {t2_data.get('dataset_version', 'G4KMU/t2-ragbench')} | Evaluated: All {t2_data.get('sample_count', 1142)} Samples (Zero Oracle Fallback)")
+
             t2_m = t2_data.get("metrics", {})
             c1, c2, c3, c4, c5 = st.columns(5)
-            c1.metric("Exact Match", f"{t2_m.get('exact_match', 0)*100:.1f}%")
-            c2.metric("Token Macro F1", f"{t2_m.get('macro_f1', 0)*100:.1f}%")
-            c3.metric("Scale Accuracy", f"{t2_m.get('scale_accuracy', 0)*100:.1f}%")
-            c4.metric("Evidence Attribution", f"{t2_m.get('evidence_attribution_accuracy', 0)*100:.1f}%")
-            c5.metric("Hybrid MRR", f"{t2_m.get('retrieval_mrr', 0):.4f}")
+            c1.metric("Scale Accuracy", f"{t2_m.get('scale_accuracy', 0)*100:.1f}%")
+            c2.metric("Evidence Attribution", f"{t2_m.get('evidence_attribution_accuracy', 0)*100:.1f}%")
+            c3.metric("Retrieval MRR (ATLAS)", f"{t2_m.get('retrieval_mrr', 0):.4f}")
+            c4.metric("Exact Match (End-to-End)", f"{t2_m.get('exact_match', 0)*100:.2f}%")
+            c5.metric("Pure Reasoning (Gold Doc)", f"{t2_m.get('pure_reasoning_accuracy_oracle_context', 0)*100:.2f}%")
 
-            st.markdown("#### Retrieval Strategy Comparison")
+            st.markdown("#### Retrieval Strategy Comparison (278 Financial Documents / 1,142 Queries)")
             ret_comps = t2_data.get("details", {}).get("retrieval_comparisons", {})
             if ret_comps:
                 ret_rows = []
@@ -726,42 +772,13 @@ elif selected_section == "8. Evaluation Lab":
                         "MRR": f"{s_metrics.get('mrr', 0):.4f}",
                         "nDCG@5": f"{s_metrics.get('ndcg_at_5', 0):.4f}"
                     })
-                df_ret = pd.DataFrame(ret_rows)
-                st.table(df_ret)
+                st.table(pd.DataFrame(ret_rows))
 
             st.divider()
 
-            # --- BENCHMARK 2: FINANCEMATH ---
-            st.subheader("2. FinanceMath: Knowledge-Intensive Financial Math Reasoning")
-            st.caption(f"Dataset: {fm_data.get('dataset_version', 'yale-nlp/FinanceMath')} | Samples: {fm_data.get('sample_count', 100)}")
-
-            fm_m = fm_data.get("metrics", {})
-            fc1, fc2, fc3, fc4 = st.columns(4)
-            fc1.metric("Exact Answer Accuracy", f"{fm_m.get('exact_answer_accuracy', 0)*100:.1f}%")
-            fc2.metric("Numerical Execution Correctness", f"{fm_m.get('numerical_execution_correctness', 0)*100:.1f}%")
-            fc3.metric("Trace Validity", f"{fm_m.get('reasoning_trace_validity', 0)*100:.1f}%")
-            fc4.metric("Avg Latency", f"{fm_m.get('latency_ms_per_question', 0):.1f} ms")
-
-            st.markdown("#### Breakdown across 7 CFA Financial Topics")
-            topics = fm_data.get("details", {}).get("topic_breakdown", {})
-            if topics:
-                top_rows = []
-                for top_name, top_stats in topics.items():
-                    top_rows.append({
-                        "CFA Topic": top_name,
-                        "Questions": top_stats.get("total_questions", 0),
-                        "Correct Answers": top_stats.get("correct", 0),
-                        "Accuracy": f"{top_stats.get('accuracy', 0)*100:.1f}%",
-                        "Valid Trace Rate": f"{top_stats.get('valid_trace_rate', 0)*100:.1f}%"
-                    })
-                df_top = pd.DataFrame(top_rows)
-                st.table(df_top)
-
-            st.divider()
-
-            # --- BENCHMARK 3: AVERITEC ---
-            st.subheader("3. AVeriTeC: Automated Verification of Real-World Textual Claims")
-            st.caption(f"Dataset: {av_data.get('dataset_version', 'pminervini/averitec')} | Samples: {av_data.get('sample_count', 100)}")
+            # --- BENCHMARK 4: AVERITEC DIAGNOSTIC ---
+            st.subheader("4. AVeriTeC: Automated Verification of Real-World Claims (Diagnostic)")
+            st.caption(f"Dataset: {av_data.get('dataset_version', 'pminervini/averitec')} | Evaluated: {av_data.get('sample_count', 100)} Claims")
 
             av_m = av_data.get("metrics", {})
             ac1, ac2, ac3 = st.columns(3)
@@ -769,7 +786,6 @@ elif selected_section == "8. Evaluation Lab":
             ac2.metric("Official Macro-F1", f"{av_m.get('macro_f1', 0):.4f}")
             ac3.metric("Total Claims Evaluated", av_m.get("total_claims", 100))
 
-            st.markdown("#### 4-Class Precision, Recall, and F1 Breakdown")
             classes = av_data.get("details", {}).get("per_class_breakdown", {})
             if classes:
                 cls_rows = []
@@ -782,10 +798,7 @@ elif selected_section == "8. Evaluation Lab":
                         "F1-Score": f"{f1_v:.3f}",
                         "Support (Samples)": c_stats.get("support", 0)
                     })
-                df_cls = pd.DataFrame(cls_rows)
-                st.table(df_cls)
-
-            st.caption("ℹ️ Methodology Note: AVeriTeC evaluates open-web noisy claim verification with 4 mutually exclusive verdicts. Unlike closed financial tables, open claims contain ambiguous and cherry-picked facts.")
+                st.table(pd.DataFrame(cls_rows))
 
     with tab_internal:
         st.subheader("Internal Factual Claim Adversarial Suite (250 Samples)")
@@ -798,7 +811,6 @@ elif selected_section == "8. Evaluation Lab":
                 st.success(f"Internal regression passed: {reg_res.metrics.get('overall_accuracy', 0)*100:.2f}% Accuracy | {reg_res.metrics.get('f1_score', 0):.4f} F1")
                 st.rerun()
 
-        # Display historical runs from DB
         conn = get_sqlite_conn()
         cur = conn.cursor()
         cur.execute("SELECT run_id, benchmark_name, dataset_version, sample_count, passed_threshold, execution_time_seconds, metrics_json, timestamp FROM benchmark_runs ORDER BY timestamp DESC")

@@ -119,3 +119,4 @@ def test_ranking_validity_blocks_invalid_comparisons(engine):
     # Payment volume ranking has caveats
     is_valid_pay, warnings_pay = engine.check_ranking_validity("NAT.DIGITAL.PAY.VOL", ["IND", "IDN", "THA"])
     assert any("CAVEAT" in w for w in warnings_pay)
+

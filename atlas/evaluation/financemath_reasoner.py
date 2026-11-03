@@ -169,3 +169,4 @@ class FinanceMathReasoner:
             "method": "none",
             "topic": topic
         }
+
