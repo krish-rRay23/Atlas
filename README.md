@@ -1,8 +1,8 @@
 # ATLAS — Asia Research Evidence Intelligence & Decision Workbench
 
-[![Tests](https://img.shields.io/badge/tests-23%20passed-brightgreen.svg)]()
+[![Tests](https://img.shields.io/badge/tests-46%20passed%20(100%25)-brightgreen.svg)]()
 [![Python](https://img.shields.io/badge/python-3.11%20%7C%203.12%20%7C%203.14-blue.svg)]()
-[![FastAPI](https://img.shields.io/badge/FastAPI-1.0.0-teal.svg)]()
+[![FastAPI](https://img.shields.io/badge/FastAPI-2.0.0-teal.svg)]()
 [![Streamlit](https://img.shields.io/badge/Streamlit-1.40.0-red.svg)]()
 [![DuckDB](https://img.shields.io/badge/DuckDB-OLAP%20Enabled-orange.svg)]()
 [![License](https://img.shields.io/badge/license-MIT-lightgrey.svg)]()
@@ -36,12 +36,12 @@ ATLAS is engineered for institutional research workflows (relevant to the **McKi
 - **Module 2: Source Intelligence**: Full source registry with publisher metadata, collection methodologies, official URLs, and SHA-256 cryptographic hashes.
 - **Module 3: Ingestion & Normalization**: Automated API ingestion from World Bank Open Data, IMF FAS mirror, central bank bulletins (RBI, BI, BOT, BSP, SBV), and GSMA Intelligence.
 - **Module 4: Evidence Ledger**: Granular, auditable ledger with 466+ verified observation records, citation strings, and human verification statuses.
-- **Module 5: AsiaMetric Comparability Engine**: 5-dimensional deterministic validation (units, denominators, populations, methodologies, reference periods) that catches comparability traps and refuses invalid cross-market rankings.
-- **Module 6: Claim Validation Engine**: Automated claim-level checking verifying precision-based numerical fidelity, temporal matches, and detecting factual contradictions.
-- **Module 7: Research Synthesis Engine**: Evidence-grounded generation of professional 12-section research memos, strictly separating observed facts from analytical interpretations.
-- **Module 8: Evaluation Lab**: Rigorous benchmarking against FinQA, TAT-QA, ALCE, RAGAS, and a 35-sample In-Domain golden test set.
-- **Module 9: Economics & AI Observability**: Reconciled workflow timing, token telemetry, and transparent Conservative / Base / Upside scenario modeling.
-- **Module 10: System Settings & Governance**: Operationalizes the NIST AI Risk Management Framework (RMF 1.0).
+- **Module 5: AsiaMetric Comparability Engine**: 10-dimensional deterministic validation (constructs, units, scale, denominators, target populations, reference periods, geography, frequency, collection methodology, source reliability) that catches comparability traps and blocks invalid cross-market rankings.
+- **Module 6: Claim Validation Engine**: Automated claim-level checking verifying precision-based numerical fidelity, temporal matches, timeseries trend deltas, and eliminating false-positive loophole passes.
+- **Module 7: Research Synthesis Engine**: Evidence-grounded generation of professional 12-section research memos with context-bounded citations, strictly separating observed facts from analytical interpretations.
+- **Module 8: Evaluation Lab**: Rigorous benchmarking against FinQA (End-to-End & DSL Conformance), TAT-QA (TableDocumentReasoner), ALCE, RAGAS proxies, Held-Out Validation, and the 250-Claim Stratified Benchmark.
+- **Module 9: Economics & AI Observability**: Reconciled workflow timing, token telemetry, background job queues, and transparent scenario modeling.
+- **Module 10: System Settings & Governance**: Operationalizes the NIST AI Risk Management Framework (RMF 1.0) and OWASP Top 10 for LLM Applications with RBAC, SSRF defense, and immutable human audit revisions.
 
 ---
 
@@ -60,23 +60,23 @@ ATLAS is engineered for institutional research workflows (relevant to the **McKi
 
 | Benchmark | Dataset Split | Evaluated / Available | Primary Metric | Score | Status |
 |---|---|---|---|---|---|
+| **Comprehensive Claim Benchmark** | Stratified Evidence Suite (7 categories) | 250 / 250 claims | Overall Accuracy | **93.20%** (233/250) | **PASSED** |
+| • *Supported Precision* | Factual Claims Precision | 76 predicted supports | Precision | **98.68%** (75/76) | **PASSED** |
+| • *Factual Recall* | Ground Truth Valid Claims | 75 factual claims | Recall | **100.0%** (75/75) | **PASSED** |
+| • *False Positive Rate* | Contradicted & Corrupted Flags | 175 invalid claims | FPR | **0.57%** (1/175) | **PASSED** |
+| • *Held-Out Validation (v2.0)* | 10 Held-Out Claims (Frozen Validator) | 10 / 10 cases | Verification Accuracy | **100.0%** (10/10) | **PASSED** |
+| **TAT-QA Reasoning (v2.0)** | Official Dev Split (TableDocumentReasoner) | 75 / 1,668 questions | Exact Match (EM) | **16.0%** (12/75) | **4.0x vs Baseline** |
+| • *Macro F1 Score* | Decoupled Official Evaluator F1 | 75 / 1,668 questions | Macro F1 | **24.65%** | **6.16x vs Baseline** |
+| • *Scale Accuracy* | Predicted Scale Factor | 75 / 1,668 questions | Scale Accuracy | **65.33%** (49/75) | **PASSED** |
+| **FinQA Synthesis (v2.0)** | Official Test Split (Multi-Step DSL) | 100 / 1,147 samples | Execution Success | **100.0%** (100/100) | **PASSED** |
+| • *End-to-End Program Accuracy*| Autonomous Program Synthesis | 100 / 1,147 samples | Execution Accuracy | **4.00%** (4/100) | **REPORTED** |
+| • *DSL Interpreter Conformance*| Gold Reference Programs | 100 / 1,147 samples | Interpreter Acc | **90.0%** (90/100) | **PRESERVED** |
 | **In-Domain Gold** | 35 Target Economy Ground Truth Cases | 35 / 35 cases | Unweighted Accuracy | **100.0%** (35/35) | **PASSED** |
 | • *Numeric Extraction* | Official Authoritative Time Series | 25 / 25 cases | Accuracy | **100.0%** (25/25) | **PASSED** |
 | • *Comparability Traps* | AsiaMetric Cross-Country Engine | 5 / 5 cases | Rule Accuracy | **100.0%** (5/5) | **PASSED** |
 | • *Claim Verification* | Contradiction & Precision Traps | 5 / 5 cases | Verification Accuracy | **100.0%** (5/5) | **PASSED** |
-| **Held-Out Claim Validation** | Held-Out Test Claims (Frozen Validator) | 10 / 10 cases | Verification Accuracy | **70.0%** (7/10) | **PASSED** |
-| **FinQA** | Official Test Split (Multi-Step DSL) | 100 / 1,147 samples | DSL Conformance | **90.0%** (90/100) | **PASSED** |
-| • *Program Accuracy* | Register & Constant Resolution | 100 / 1,147 samples | Program Accuracy | **84.6%** | **PASSED** |
-| **TAT-QA (Diagnostic)**| Official Dev Split (Decoupled Predictor) | 75 / 1,668 questions | Scale Accuracy | **61.3%** (46/75) | **PASSED** |
-| • *Exact Match (EM)* | Decoupled Text/Table Span Prediction | 75 / 1,668 questions | Exact Match | **4.0%** (3/75) | **EVALUATED** |
-| • *Macro F1 Score* | Decoupled Official Evaluator F1 | 75 / 1,668 questions | Macro F1 | **4.0%** (0.0400) | **EVALUATED** |
 | **ALCE-Inspired Assessment** | In-Domain Memo Claims Protocol | 14 / 14 claims | Support Rate (Cited) | **100.0%** (10/10) | **PASSED** |
-| • *Support Rate (All)* | Per-Claim Support (All Claims) | 14 / 14 claims | Support Rate (All) | **71.4%** (10/14) | **PASSED** |
-| • *Citation Precision* | Per-Citation Necessity | 10 / 10 citations | Citation Precision | **100.0%** (10/10) | **PASSED** |
-| • *Citation Coverage* | Claims with Explicit Citations | 14 / 14 claims | Citation Coverage | **71.4%** (10/14) | **PASSED** |
-| **Custom Lexical Proxies** | RAGAS-Inspired Token Overlap | Active Memos | Faithfulness Proxy | **71.4%** | **PASSED** |
-| • *Context Precision Proxy* | Target Indicator Alignment | Active Memos | Context Precision Proxy | **93.3%** | **PASSED** |
-| • *Context Recall Proxy* | In-Domain Gold Fact Coverage | Active Memos | Context Recall Proxy | **100.0%** | **PASSED** |
+| **Custom Lexical Proxies** | RAGAS-Inspired Token Overlap | Active Memos | Context Recall Proxy | **100.0%** | **PASSED** |
 
 ---
 

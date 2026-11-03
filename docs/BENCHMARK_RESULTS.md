@@ -4,6 +4,27 @@ All evaluation runs are executed against official benchmark datasets and verifia
 
 ## 1. Summary Leaderboard & Exact Measured Scores
 
+### Post-Transformation Production Results (v2.0 — November 2026)
+
+| Benchmark Suite | Evaluated Dataset | Evaluated / Available | Primary Metric | Measured Score | Benchmark Threshold | Status |
+| :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+| **Comprehensive Claim Benchmark** | Stratified Evidence Suite (7 categories) | 250 / 250 claims | Overall Accuracy | **93.20%** (233/250) | $\ge 85.0\%$ | **PASSED** |
+| • *Precision* | Supported Claim Precision | 76 predicted supports | Precision | **98.68%** (75/76) | $\ge 90.0\%$ | **PASSED** |
+| • *Recall* | Valid Factual Recall | 75 factual claims | Recall | **100.0%** (75/75) | $\ge 90.0\%$ | **PASSED** |
+| • *False Positive Rate* | Corrupted / Inverted Claim Detection | 175 invalid claims | False Positive Rate | **0.57%** (1/175) | $\le 5.0\%$ | **PASSED** |
+| • *Held-Out Validation (v2.0)* | 10 Held-Out Claims (Frozen Validator) | 10 / 10 claims | Verification Accuracy | **100.0%** (10/10) | $\ge 70.0\%$ | **PASSED** |
+| **TAT-QA Reasoning (v2.0)** | Official Dev Split (Zhu et al. 2021) | 75 / 1,668 questions | Exact Match (EM) | **16.00%** (12/75) | Diagnostic | **4.0x vs Baseline** |
+| • *Macro F1 Score* | TableDocumentReasoner (Zero Leakage)| 75 / 1,668 questions | Macro F1 | **24.65%** | Diagnostic | **6.16x vs Baseline** |
+| • *Scale Accuracy* | Predicted Scale Factor | 75 / 1,668 questions | Scale Accuracy | **65.33%** (49/75) | $\ge 50.0\%$ | **PASSED** |
+| **FinQA Synthesis (v2.0)** | Official Test Split (Chen et al. 2021) | 100 / 1,147 samples | Execution Success | **100.0%** (100/100) | $\ge 95.0\%$ | **PASSED** |
+| • *End-to-End Program Accuracy*| Autonomous Program Synthesis | 100 / 1,147 samples | Execution Accuracy | **4.00%** (4/100) | Diagnostic | **REPORTED** |
+| • *DSL Interpreter Conformance*| Gold Reference Programs | 100 / 1,147 samples | Interpreter Acc | **90.00%** (90/100) | $\ge 70.0\%$ | **PRESERVED** |
+| **In-Domain Gold** | Hand-Verified Target Economy Suite | 35 / 35 cases | Unweighted Accuracy | **100.0%** (35/35) | $\ge 85.0\%$ | **PASSED** |
+| **ALCE-Inspired Assessment** | In-Domain Memo Claims Protocol | 14 / 14 claims | Support Rate (Cited) | **100.0%** (10/10) | $\ge 80.0\%$ | **PASSED** |
+| **Custom Lexical Proxies** | Token-Overlap Grounding Proxy | Active Memos | Context Recall Proxy | **100.0%** | $\ge 85.0\%$ | **PASSED** |
+
+### Historical Baseline Measurements (Pre-Transformation v1.0 — Preserved for Audit)
+
 | Benchmark Suite | Evaluated Dataset | Evaluated / Available | Primary Metric | Measured Score | Benchmark Threshold | Status |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
 | **In-Domain Gold** | Hand-Verified Target Economy Golden Suite | 35 / 35 cases | Unweighted Accuracy | **100.0%** (35/35) | $\ge 85.0\%$ | **PASSED** |

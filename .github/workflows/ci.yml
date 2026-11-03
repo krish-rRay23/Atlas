@@ -1,0 +1,46 @@
+name: ATLAS CI — Verification & Quality Gate
+
+on:
+  push:
+    branches: [ main, production-transformation ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test-and-verify:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.11", "3.12"]
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install .
+          pip install pytest ruff
+
+      - name: Code Quality & Linting
+        run: |
+          ruff check atlas/ tests/
+
+      - name: Execute Full Pytest Test Suite
+        run: |
+          pytest tests/ -v
+
+      - name: Run Claim Validation Benchmark Gate
+        run: |
+          python -m atlas.evaluation.claim_benchmark
+
+      - name: Run Table Numerical Reasoning Gate
+        run: |
+          python -c "from atlas.evaluation.benchmarks import run_tatqa_eval; res = run_tatqa_eval(max_samples=25); print('TAT-QA Diagnostic Sample:', res['metrics'])"

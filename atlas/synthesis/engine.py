@@ -5,6 +5,7 @@ grounded in verified evidence records, with explicit claim citations,
 comparability checks, and analytical vs factual separation.
 """
 
+import re
 import json
 import uuid
 import datetime
@@ -295,14 +296,25 @@ class ResearchSynthesisEngine:
             )
         ]
 
-        # Extract all claims and perform automated claim-level verification
+        # Extract discrete factual assertions and perform automated claim-level verification
         all_claims = []
         for sec in sections:
             if sec.citations:
-                all_claims.append({
-                    "claim_text": sec.content[:300],
-                    "referenced_evidence_ids": sec.citations
-                })
+                sentences = re.split(r"(?<=[.!?])\s+", sec.content.strip())
+                captured_for_sec = False
+                for sent in sentences:
+                    s_clean = sent.strip()
+                    if len(s_clean) > 20 and any(kw in s_clean.lower() for kw in ["%", "billion", "density", "ownership", "volume", "branches", "penetration", "share"]):
+                        all_claims.append({
+                            "claim_text": s_clean,
+                            "referenced_evidence_ids": sec.citations
+                        })
+                        captured_for_sec = True
+                if not captured_for_sec and sentences:
+                    all_claims.append({
+                        "claim_text": sentences[0].strip(),
+                        "referenced_evidence_ids": sec.citations
+                    })
 
         claim_validations = self.validator.validate_memo_claims(all_claims)
         valid_count = sum(1 for c in claim_validations if c.status in ["supported", "partially_supported"])

@@ -287,3 +287,107 @@ OFFICIAL_INDICATORS: List[IndicatorDefinition] = [
     )
 ]
 
+# Source-specific freshness policies & licensing governance
+DATASET_FRESHNESS_POLICIES: Dict[str, Dict[str, Any]] = {
+    "WB_FINDEX": {
+        "cadence": "triennial",
+        "max_age_months": 36,
+        "license": "Creative Commons Attribution 4.0 International (CC-BY 4.0)",
+        "next_expected_release": "2027-Q4",
+        "methodology_type": "national_stratified_survey"
+    },
+    "IMF_FAS": {
+        "cadence": "annual",
+        "max_age_months": 15,
+        "license": "IMF Open Data Terms of Use (Attribution Required)",
+        "next_expected_release": "2025-Q4",
+        "methodology_type": "statutory_administrative_census"
+    },
+    "WB_WDI": {
+        "cadence": "annual",
+        "max_age_months": 12,
+        "license": "CC-BY 4.0 (World Bank Open Data)",
+        "next_expected_release": "2025-Q3",
+        "methodology_type": "harmonized_international_series"
+    },
+    "GSMA_ME": {
+        "cadence": "annual",
+        "max_age_months": 14,
+        "license": "GSMA Intelligence Proprietary / Academic Research Use",
+        "next_expected_release": "2025-Q3",
+        "methodology_type": "econometric_operator_triangulation"
+    },
+    "RBI_NPCI": {
+        "cadence": "monthly",
+        "max_age_months": 3,
+        "license": "Government of India National Open Data License / RBI Public Domain",
+        "next_expected_release": "2026-12",
+        "methodology_type": "payment_switch_settlement_log"
+    },
+    "BI_STAT": {
+        "cadence": "monthly",
+        "max_age_months": 3,
+        "license": "Bank Indonesia Public Disclosures",
+        "next_expected_release": "2026-12",
+        "methodology_type": "payment_switch_settlement_log"
+    },
+    "BOT_STAT": {
+        "cadence": "quarterly",
+        "max_age_months": 4,
+        "license": "Bank of Thailand Public Disclosures",
+        "next_expected_release": "2026-12",
+        "methodology_type": "payment_switch_settlement_log"
+    },
+    "BSP_FIRD": {
+        "cadence": "semi_annual",
+        "max_age_months": 8,
+        "license": "Bangko Sentral ng Pilipinas Public Disclosures",
+        "next_expected_release": "2027-Q1",
+        "methodology_type": "monetary_authority_survey_and_switch_audit"
+    },
+    "SBV_PAY": {
+        "cadence": "annual",
+        "max_age_months": 14,
+        "license": "State Bank of Vietnam Official Disclosures",
+        "next_expected_release": "2027-Q1",
+        "methodology_type": "central_bank_banking_bulletin"
+    }
+}
+
+def evaluate_source_freshness(source_id: str, last_retrieval_date_str: str) -> Dict[str, Any]:
+    """Evaluate whether an ingested source satisfies its source-specific freshness policy."""
+    policy = DATASET_FRESHNESS_POLICIES.get(source_id, {
+        "cadence": "annual",
+        "max_age_months": 12,
+        "license": "Public Domain / Standard Fair Use",
+        "next_expected_release": "TBD"
+    })
+    
+    import datetime
+    try:
+        retrieval_dt = datetime.datetime.strptime(last_retrieval_date_str[:10], "%Y-%m-%d")
+        now = datetime.datetime.now()
+        age_days = (now - retrieval_dt).days
+        age_months = age_days / 30.4375
+        
+        is_fresh = age_months <= policy["max_age_months"]
+        status = "fresh" if is_fresh else ("acceptable" if age_months <= policy["max_age_months"] * 1.5 else "stale")
+        
+        return {
+            "source_id": source_id,
+            "status": status,
+            "age_months": round(age_months, 1),
+            "max_age_months": policy["max_age_months"],
+            "cadence": policy["cadence"],
+            "license": policy["license"],
+            "next_expected_release": policy["next_expected_release"]
+        }
+    except Exception:
+        return {
+            "source_id": source_id,
+            "status": "unknown",
+            "age_months": 0.0,
+            "cadence": policy.get("cadence", "annual"),
+            "license": policy.get("license", "Unknown")
+        }
+

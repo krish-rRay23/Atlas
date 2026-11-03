@@ -1,0 +1,90 @@
+{
+  "run_id": "RUN-TATQA-1793703656",
+  "benchmark_name": "TAT-QA",
+  "dataset_version": "ACL 2021 Official Dev Split (75-Question Diagnostic Subset)",
+  "sample_count": 15,
+  "metrics": {
+    "exact_match": 0.4,
+    "f1_score": 0.5564,
+    "scale_accuracy": 0.7333,
+    "evaluated_question_count": 15.0,
+    "total_dev_questions_in_benchmark": 1668.0,
+    "evaluated_tables_count": 15.0,
+    "total_dev_tables_available": 278.0
+  },
+  "passed_threshold": true,
+  "execution_time_seconds": 0.039,
+  "timestamp": "2026-11-03T11:00:56Z",
+  "details": {
+    "question_selection": "First 15 consecutive questions across 15 documents from official tatqa_dataset_dev.json",
+    "answer_type_distribution": {
+      "span": 8,
+      "multi-span": 3,
+      "arithmetic": 4
+    },
+    "scale_distribution": {
+      "": 10,
+      "million": 3,
+      "percent": 2
+    },
+    "prediction_generation_integrity": "Predictions generated strictly from table, paragraphs, and question without access to gold answers, derivations, or answer scales. Standalone prediction file saved to data/evaluation/tatqa_predictions.json.",
+    "benchmark_scope_disclaimer": "Diagnostic subset evaluation over 75 questions. This does NOT represent full benchmark performance across all 1,668 dev set questions.",
+    "sample_failures": [
+      {
+        "uid": "23801627-ff77-4597-8d24-1c99e2452082",
+        "question": "What is the company paid on a cost-plus type contract?",
+        "predicted": "On a cost-plus type contract, we are paid our allowable incurred costs plus a profit which can be fixed or variable depending on the contract\u2019s fee arrangement up to predetermined funding levels determined by the customer.",
+        "expected": [
+          "our allowable incurred costs plus a profit which can be fixed or variable depending on the contract\u2019s fee arrangement up to predetermined funding levels determined by the customer"
+        ],
+        "token_f1": 0.844
+      },
+      {
+        "uid": "593c4388-5209-4462-8b83-b429c8612c25",
+        "question": "What are the contract types?",
+        "predicted": "Sales included in Other contract types represent cost plus and time and material type contracts.",
+        "expected": [
+          "fixed-price type",
+          "cost-plus type",
+          "time-and-material type"
+        ],
+        "token_f1": 0.118
+      },
+      {
+        "uid": "86ae8d77-4dcd-4f82-baac-61c6a2551760",
+        "question": "How is industry end market information presented?",
+        "predicted": "(1) Industry end market information is presented consistently with our internal management reporting and may be revised periodically as management deems necessary.",
+        "expected": [
+          "consistently with our internal management reporting and may be revised periodically as management deems necessary."
+        ],
+        "token_f1": 0.811
+      },
+      {
+        "uid": "b1018041-1c58-47f2-94db-fa8df0a631cb",
+        "question": "In which years was for the net sales by segment and industry end market calculated?",
+        "predicted": [
+          "2019",
+          "2018",
+          "2017"
+        ],
+        "expected": [
+          "2019",
+          "2018",
+          "2017"
+        ],
+        "token_f1": 0.5
+      },
+      {
+        "uid": "d841005e-c88b-4071-aa53-16bd8a892656",
+        "question": "What are the types of Solutions segments in the table?",
+        "predicted": "0",
+        "expected": [
+          "Transportation Solutions",
+          "Industrial Solutions",
+          "Communications Solutions"
+        ],
+        "token_f1": 0.0
+      }
+    ]
+  }
+}

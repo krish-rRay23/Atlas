@@ -1,0 +1,111 @@
+{
+  "run_id": "RUN-HELDOUT-1793703656",
+  "benchmark_name": "HeldOutClaimValidation",
+  "dataset_version": "Held-Out Factual Claim Suite v1.0 (Frozen Validator)",
+  "sample_count": 10,
+  "metrics": {
+    "heldout_accuracy": 1.0,
+    "passed_samples": 10.0,
+    "total_samples": 10.0,
+    "frozen_decimal_tolerance": 0.15,
+    "frozen_integer_tolerance": 0.6
+  },
+  "passed_threshold": true,
+  "execution_time_seconds": 0.071,
+  "timestamp": "2026-11-03T11:00:56Z",
+  "details": {
+    "frozen_validator_disclaimer": "Evaluated with frozen ClaimValidationEngine configuration without tuning tolerances for this dataset.",
+    "eval_records": [
+      {
+        "id": "HELD-01",
+        "claim": "In 2024, female account ownership in India reached 89.25%.",
+        "expected_status": "supported",
+        "predicted_status": "supported",
+        "fidelity_score": 1.0,
+        "passed": true,
+        "explanation": "Fully verified against referenced authoritative evidence records."
+      },
+      {
+        "id": "HELD-02",
+        "claim": "In 2024, female account ownership in the Philippines reached 57.1%.",
+        "expected_status": "supported",
+        "predicted_status": "supported",
+        "fidelity_score": 1.0,
+        "passed": true,
+        "explanation": "Fully verified against referenced authoritative evidence records."
+      },
+      {
+        "id": "HELD-03",
+        "claim": "Thailand reported commercial bank branch density of 8.02 per 100,000 adults in 2024.",
+        "expected_status": "supported",
+        "predicted_status": "supported",
+        "fidelity_score": 1.0,
+        "passed": true,
+        "explanation": "Fully verified against referenced authoritative evidence records."
+      },
+      {
+        "id": "HELD-04",
+        "claim": "Indonesia commercial bank branch density reached 11.23 branches per 100k adults in 2024.",
+        "expected_status": "supported",
+        "predicted_status": "supported",
+        "fidelity_score": 1.0,
+        "passed": true,
+        "explanation": "Fully verified against referenced authoritative evidence records."
+      },
+      {
+        "id": "HELD-05",
+        "claim": "Vietnam had 3.10 commercial bank branches per 100,000 adults in 2024.",
+        "expected_status": "supported",
+        "predicted_status": "supported",
+        "fidelity_score": 1.0,
+        "passed": true,
+        "explanation": "Fully verified against referenced authoritative evidence records."
+      },
+      {
+        "id": "HELD-06",
+        "claim": "In 2023, Thailand internet penetration was reported at 89.5%.",
+        "expected_status": "supported",
+        "predicted_status": "supported",
+        "fidelity_score": 1.0,
+        "passed": true,
+        "explanation": "Fully verified against referenced authoritative evidence records."
+      },
+      {
+        "id": "HELD-07",
+        "claim": "In 2024, female account ownership in Thailand plummeted to only 15.0%.",
+        "expected_status": "contradicted",
+        "predicted_status": "contradicted",
+        "fidelity_score": 0.0,
+        "passed": true,
+        "explanation": "Contradiction detected: Claimed statistic (15.0) diverges significantly from verified evidence ([92.7001])"
+      },
+      {
+        "id": "HELD-08",
+        "claim": "India commercial bank branch density dropped sharply to only 1.2 branches per 100k adults in 2024.",
+        "expected_status": "contradicted",
+        "predicted_status": "contradicted",
+        "fidelity_score": 0.0,
+        "passed": true,
+        "explanation": "Contradiction detected: Claimed statistic (1.2) diverges significantly from verified evidence ([14.6204])"
+      },
+      {
+        "id": "HELD-09",
+        "claim": "Indonesia reported that female account ownership decreased significantly in 2024.",
+        "expected_status": "contradicted",
+        "predicted_status": "contradicted",
+        "fidelity_score": 0.0,
+        "passed": true,
+        "explanation": "Contradiction detected: Claim asserts decrease/decline, but authoritative time-series indicates growth from 52.3045 (2021) to 58.0308 (2024)."
+      },
+      {
+        "id": "HELD-10",
+        "claim": "Vietnam digital financial inclusion reached universal coverage of 99% in 2024.",
+        "expected_status": "contradicted",
+        "predicted_status": "contradicted",
+        "fidelity_score": 0.0,
+        "passed": true,
+        "explanation": "Contradiction detected: Claimed statistic (99.0) diverges significantly from verified evidence ([70.5508]); Claim asserts universal coverage but evidence indicates 70.5508%."
+      }
+    ]
+  }
+}

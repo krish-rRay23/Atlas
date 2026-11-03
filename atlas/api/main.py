@@ -1,18 +1,20 @@
 """ATLAS FastAPI REST API.
 
 Provides endpoints for projects, source intelligence, evidence ledger,
-AsiaMetric comparability engine, research memo synthesis, evaluation, and economics.
+AsiaMetric comparability engine, research memo synthesis, evaluation, background jobs,
+claim review governance, observability metrics, and health checks.
 """
 
-from fastapi import FastAPI, HTTPException, Query, Body
+from fastapi import FastAPI, HTTPException, Query, Body, Depends, status, Response
 from fastapi.middleware.cors import CORSMiddleware
 from typing import List, Dict, Any, Optional
 import json
 import uuid
 import datetime
+from pathlib import Path
 
 from atlas.core.config import settings
-from atlas.core.db import get_sqlite_conn, sync_duckdb
+from atlas.core.db import get_sqlite_conn, sync_duckdb, check_db_health
 from atlas.core.models import ProjectCreate, Project, SourceMetadata, IndicatorDefinition, EvidenceRecord
 from atlas.evidence.ledger import EvidenceLedgerService
 from atlas.comparability.asiametric import AsiaMetricEngine
@@ -20,24 +22,117 @@ from atlas.synthesis.engine import ResearchSynthesisEngine
 from atlas.evaluation.runner import run_all_benchmarks
 from atlas.economics.calculator import EconomicsCalculator
 from atlas.sources.registry import OFFICIAL_SOURCES, OFFICIAL_INDICATORS
+from atlas.core.security import get_current_user, require_role, safe_path_join
+from atlas.core.jobs import JobService
+from atlas.core.observability import StructuredLoggingMiddleware, get_system_metrics
 
 app = FastAPI(
     title="ATLAS — Asia Research Evidence Intelligence API",
     description="Enterprise API for evidence-grounded comparative research across Asian economies.",
-    version="1.0.0"
+    version="2.0.0"
 )
 
+# 1. Observability & Structured Logging
+app.add_middleware(StructuredLoggingMiddleware)
+
+# 2. CORS Policy
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=settings.allowed_cors_origins if "*" not in settings.allowed_cors_origins else ["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
+# --- HEALTH & OBSERVABILITY ---
 @app.get("/health")
 def health_check():
-    return {"status": "healthy", "service": "ATLAS Backend", "timestamp": datetime.datetime.now(datetime.timezone.utc).isoformat()}
+    """Basic health check endpoint."""
+    return {
+        "status": "healthy",
+        "service": "ATLAS Backend",
+        "timestamp": datetime.datetime.now(datetime.timezone.utc).isoformat()
+    }
+
+@app.get("/health/live")
+def liveness_check():
+    """Liveness probe: returns 200 immediately if process is responsive."""
+    return {"status": "alive", "timestamp": datetime.datetime.now(datetime.timezone.utc).isoformat()}
+
+@app.get("/health/ready")
+def readiness_check():
+    """Readiness probe: validates database connectivity and storage health."""
+    db_health = check_db_health()
+    is_ready = db_health.get("sqlite") == "healthy" and db_health.get("duckdb") == "healthy"
+    status_code = status.HTTP_200_OK if is_ready else status.HTTP_503_SERVICE_UNAVAILABLE
+    return {
+        "status": "ready" if is_ready else "not_ready",
+        "database": db_health,
+        "timestamp": datetime.datetime.now(datetime.timezone.utc).isoformat()
+    }
+
+@app.get("/api/metrics")
+def get_metrics(current_user: Dict[str, Any] = Depends(require_role(["admin", "researcher", "reviewer"]))):
+    """Retrieve operational system telemetry, memory usage, request counts, and error rates."""
+    return get_system_metrics()
+
+# --- BACKGROUND JOBS ---
+@app.get("/api/jobs")
+def list_background_jobs(
+    limit: int = 20,
+    current_user: Dict[str, Any] = Depends(get_current_user)
+):
+    """List recent background jobs and their execution statuses."""
+    return JobService.list_jobs(limit=limit)
+
+@app.get("/api/jobs/{job_id}")
+def get_background_job(
+    job_id: str,
+    current_user: Dict[str, Any] = Depends(get_current_user)
+):
+    """Retrieve status, progress, and results of a specific background job."""
+    job = JobService.get_job(job_id)
+    if not job:
+        raise HTTPException(status_code=404, detail=f"Job {job_id} not found")
+    return job
+
+@app.post("/api/jobs")
+def submit_background_job(
+    job_type: str = Body(..., embed=True),
+    parameters: Dict[str, Any] = Body(default={}, embed=True),
+    current_user: Dict[str, Any] = Depends(require_role(["admin", "researcher"]))
+):
+    """Enqueue an asynchronous background task (e.g. memo synthesis, benchmark suite, data sync)."""
+    user_id = current_user.get("user_id", "ANONYMOUS")
+    job_id = JobService.create_job(job_type, user_id=user_id)
+
+    if job_type == "generate_memo":
+        project_id = parameters.get("project_id", "PROJ-DEFAULT")
+        question = parameters.get("research_question")
+        def _task():
+            engine = ResearchSynthesisEngine()
+            memo = engine.generate_comparative_memo(
+                project_id=project_id,
+                research_question=question or "Comparative digital financial inclusion across Asian economies"
+            )
+            return {"memo_id": memo.memo_id, "claims_count": len(memo.claims_ledger)}
+        JobService.submit_task(job_id, _task)
+
+    elif job_type == "run_benchmarks":
+        def _bench_task():
+            return run_all_benchmarks()
+        JobService.submit_task(job_id, _bench_task)
+
+    elif job_type == "sync_duckdb":
+        def _sync_task():
+            sync_duckdb()
+            return {"synced": True}
+        JobService.submit_task(job_id, _sync_task)
+
+    else:
+        raise HTTPException(status_code=400, detail=f"Unsupported job_type: '{job_type}'. Valid: generate_memo, run_benchmarks, sync_duckdb")
+
+    return {"job_id": job_id, "status": "queued", "job_type": job_type}
 
 # --- PROJECTS ---
 @app.get("/api/projects")
@@ -50,7 +145,7 @@ def list_projects():
     return rows
 
 @app.post("/api/projects")
-def create_project(payload: ProjectCreate):
+def create_project(payload: ProjectCreate, current_user: Dict[str, Any] = Depends(require_role(["admin", "researcher"]))):
     conn = get_sqlite_conn()
     cur = conn.cursor()
     proj_id = f"PROJ-{uuid.uuid4().hex[:8].upper()}"
@@ -145,7 +240,8 @@ def get_evidence_summary():
 def review_evidence(
     evidence_id: str,
     status: str = Body(..., embed=True),
-    reviewer_notes: str = Body("", embed=True)
+    reviewer_notes: str = Body("", embed=True),
+    current_user: Dict[str, Any] = Depends(require_role(["admin", "reviewer"]))
 ):
     success = EvidenceLedgerService.update_review_status(evidence_id, status, reviewer_notes, True)
     if not success:
@@ -178,7 +274,7 @@ def evaluate_comparability(
     result = engine.evaluate_pair(indicator_a, country_a, year_a, indicator_b, country_b, year_b)
     return result.model_dump()
 
-# --- RESEARCH SYNTHESIS ---
+# --- RESEARCH SYNTHESIS & CLAIM AUDIT REVISION ---
 @app.get("/api/memos")
 def list_memos():
     conn = get_sqlite_conn()
@@ -201,10 +297,60 @@ def get_memo(memo_id: str):
     data["sections"] = json.loads(data["sections_json"])
     return data
 
+@app.get("/api/memos/{memo_id}/export")
+def export_memo(
+    memo_id: str,
+    export_format: str = Query(default="markdown", pattern="^(markdown|json)$")
+):
+    """Safely export research memo as formatted Markdown report or JSON artifact."""
+    conn = get_sqlite_conn()
+    cur = conn.cursor()
+    cur.execute("SELECT * FROM research_memos WHERE memo_id = ?", (memo_id,))
+    row = cur.fetchone()
+    conn.close()
+    if not row:
+        raise HTTPException(status_code=404, detail="Memo not found")
+    
+    data = dict(row)
+    if export_format == "json":
+        data["sections"] = json.loads(data["sections_json"])
+        return data
+
+    # Markdown serialization
+    sections = json.loads(data["sections_json"])
+    lines = [
+        f"# {data['title']}",
+        f"**Memo ID:** `{data['memo_id']}` | **Project:** `{data['project_id']}`",
+        f"**Date:** {data['generated_at']} | **Model:** `{data['model_used']}`",
+        f"**Validation Status:** {data['validation_status'].upper()}",
+        "",
+        "## Research Question",
+        data['research_question'],
+        "",
+        "---",
+        ""
+    ]
+    for s in sections:
+        lines.append(f"## {s.get('title', 'Section')}")
+        lines.append(s.get("content", ""))
+        lines.append("")
+
+    lines.append("---")
+    lines.append("## Automated Audit & Methodological Citations")
+    lines.append("Generated by ATLAS — Asia Research Evidence Intelligence & Decision Workbench.")
+
+    md_content = "\n".join(lines)
+    return Response(
+        content=md_content,
+        media_type="text/markdown",
+        headers={"Content-Disposition": f'attachment; filename="ATLAS_Memo_{memo_id}.md"'}
+    )
+
 @app.post("/api/memos/generate")
 def generate_memo(
     project_id: str = Body(default="PROJ-DEFAULT"),
-    question: Optional[str] = Body(None)
+    question: Optional[str] = Body(None),
+    current_user: Dict[str, Any] = Depends(require_role(["admin", "researcher"]))
 ):
     engine = ResearchSynthesisEngine()
     memo = engine.generate_comparative_memo(
@@ -212,6 +358,69 @@ def generate_memo(
         research_question=question or "How do India, Indonesia, Vietnam, Thailand and the Philippines compare in digital financial inclusion, access to financial services and digital payment adoption?"
     )
     return memo.model_dump()
+
+@app.post("/api/claims/{claim_id}/review")
+def review_claim(
+    claim_id: str,
+    decision: str = Body(..., embed=True, description="ACCEPTED, REJECTED, or MODIFIED"),
+    reviewer_notes: str = Body("", embed=True),
+    revised_text: Optional[str] = Body(None, embed=True),
+    memo_id: Optional[str] = Body(None, embed=True),
+    current_user: Dict[str, Any] = Depends(require_role(["admin", "reviewer"]))
+):
+    """Record an analyst/reviewer audit revision on a synthesized research claim.
+    Persists to the immutable claim_revisions audit trail.
+    """
+    decision_clean = decision.upper().strip()
+    if decision_clean not in ["ACCEPTED", "REJECTED", "MODIFIED"]:
+        raise HTTPException(status_code=400, detail="Decision must be one of: ACCEPTED, REJECTED, MODIFIED")
+
+    conn = get_sqlite_conn()
+    cur = conn.cursor()
+    try:
+        # Locate existing claim in evidence ledger or research memo if present
+        cur.execute("SELECT * FROM evidence_ledger WHERE evidence_id = ?", (claim_id,))
+        ev_row = cur.fetchone()
+        original_text = ev_row["citation_text"] if ev_row else f"Claim {claim_id}"
+        prev_status = ev_row["validation_status"] if ev_row else "unreviewed"
+
+        rev_id = f"REV-{uuid.uuid4().hex[:10].upper()}"
+        now_ts = datetime.datetime.now(datetime.timezone.utc).isoformat()
+        reviewer_id = current_user.get("user_id", "ANONYMOUS-REVIEWER")
+
+        cur.execute("""
+        INSERT INTO claim_revisions (
+            revision_id, claim_id, memo_id, original_text, revised_text,
+            status, previous_status, new_status, reviewer_notes, reviewer_id, reviewed_at, timestamp
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        """, (
+            rev_id, claim_id, memo_id, original_text,
+            revised_text or original_text, decision_clean,
+            prev_status, decision_clean,
+            reviewer_notes, reviewer_id, now_ts, now_ts
+        ))
+
+        # Also update evidence_ledger if the claim is tracked there
+        if ev_row:
+            mapped_status = "verified" if decision_clean == "ACCEPTED" else ("rejected" if decision_clean == "REJECTED" else "caveat")
+            cur.execute("""
+            UPDATE evidence_ledger
+            SET validation_status = ?, verified_by_human = 1, reviewer_notes = ?
+            WHERE evidence_id = ?
+            """, (mapped_status, reviewer_notes, claim_id))
+
+        conn.commit()
+    finally:
+        conn.close()
+
+    return {
+        "status": "success",
+        "revision_id": rev_id,
+        "claim_id": claim_id,
+        "decision": decision_clean,
+        "reviewer_id": reviewer_id,
+        "reviewed_at": now_ts
+    }
 
 # --- BENCHMARKS & EVALUATION ---
 @app.get("/api/evaluation/benchmarks")
@@ -228,7 +437,7 @@ def get_benchmark_results():
     return rows
 
 @app.post("/api/evaluation/run")
-def trigger_benchmark_run():
+def trigger_benchmark_run(current_user: Dict[str, Any] = Depends(require_role(["admin"]))):
     results = run_all_benchmarks()
     return {"status": "completed", "results": results}
 
@@ -242,4 +451,3 @@ def get_economics():
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, host=settings.api_host, port=settings.api_port)
-

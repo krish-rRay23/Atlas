@@ -5,19 +5,83 @@ Provides persistent relational storage and analytical OLAP engine.
 
 import sqlite3
 import duckdb
-from typing import List, Dict, Any, Optional
+from typing import List, Dict, Any, Optional, Generator
 import os
 import json
-from atlas.core.config import SQLITE_DB_PATH, DUCKDB_PATH
+import threading
+from contextlib import contextmanager
+from atlas.core.config import SQLITE_DB_PATH, DUCKDB_PATH, PROCESSED_DATA_DIR, settings
+
+# Thread-safe lock for DuckDB write operations
+_duckdb_write_lock = threading.Lock()
 
 def get_sqlite_conn() -> sqlite3.Connection:
-    conn = sqlite3.connect(str(SQLITE_DB_PATH), check_same_thread=False)
+    """Acquire a thread-safe connection to SQLite with row factory and foreign keys enabled."""
+    conn = sqlite3.connect(str(SQLITE_DB_PATH), check_same_thread=False, timeout=60.0)
     conn.row_factory = sqlite3.Row
     conn.execute("PRAGMA foreign_keys = ON")
+    conn.execute("PRAGMA journal_mode = WAL")  # Write-Ahead Logging for high concurrency
+    conn.execute("PRAGMA busy_timeout = 30000")  # 30s busy timeout
     return conn
 
-def get_duckdb_conn() -> duckdb.DuckDBPyConnection:
-    return duckdb.connect(str(DUCKDB_PATH))
+@contextmanager
+def transaction() -> Generator[sqlite3.Cursor, None, None]:
+    """Context manager for atomic database transactions with automatic rollback on error."""
+    conn = get_sqlite_conn()
+    cur = conn.cursor()
+    try:
+        yield cur
+        conn.commit()
+    except Exception:
+        conn.rollback()
+        raise
+    finally:
+        conn.close()
+
+def get_duckdb_conn(read_only: bool = False) -> duckdb.DuckDBPyConnection:
+    """Acquire a DuckDB connection.
+    For analytical queries, set read_only=True to prevent file write-lock contention.
+    """
+    try:
+        return duckdb.connect(str(DUCKDB_PATH), read_only=read_only)
+    except Exception:
+        # Fallback to an in-memory instance querying parquet directly if the file is locked
+        conn = duckdb.connect(":memory:")
+        obs_p = PROCESSED_DATA_DIR / "observations.parquet"
+        ev_p = PROCESSED_DATA_DIR / "evidence_ledger.parquet"
+        if obs_p.exists():
+            obs_str = str(obs_p).replace("\\", "/")
+            conn.execute(f"CREATE VIEW IF NOT EXISTS observations AS SELECT * FROM read_parquet('{obs_str}')")
+        if ev_p.exists():
+            ev_str = str(ev_p).replace("\\", "/")
+            conn.execute(f"CREATE VIEW IF NOT EXISTS evidence_ledger AS SELECT * FROM read_parquet('{ev_str}')")
+        return conn
+
+def get_duckdb_read_conn() -> duckdb.DuckDBPyConnection:
+    """Safe read-only DuckDB connection for API and UI queries."""
+    return get_duckdb_conn(read_only=True)
+
+def check_db_health() -> Dict[str, Any]:
+    """Health check for operational and analytical databases."""
+    status = {"sqlite": "healthy", "duckdb": "healthy", "tables": {}}
+    try:
+        conn = get_sqlite_conn()
+        cur = conn.cursor()
+        cur.execute("SELECT count(*) FROM sqlite_master WHERE type='table'")
+        status["tables"]["sqlite_table_count"] = cur.fetchone()[0]
+        conn.close()
+    except Exception as e:
+        status["sqlite"] = f"unhealthy: {str(e)}"
+
+    try:
+        dconn = get_duckdb_read_conn()
+        res = dconn.execute("SHOW TABLES").fetchall()
+        status["tables"]["duckdb_tables"] = [r[0] for r in res]
+        dconn.close()
+    except Exception as e:
+        status["duckdb"] = f"unhealthy: {str(e)}"
+
+    return status
 
 def init_database():
     """Idempotently initialize relational and analytical schemas."""
@@ -204,6 +268,51 @@ def init_database():
     )
     """)
 
+    # 11. Users & Roles for Production RBAC
+    cur.execute("""
+    CREATE TABLE IF NOT EXISTS users (
+        user_id TEXT PRIMARY KEY,
+        username TEXT UNIQUE NOT NULL,
+        hashed_password TEXT NOT NULL,
+        role TEXT NOT NULL DEFAULT 'researcher',
+        created_at TEXT NOT NULL,
+        is_active INTEGER DEFAULT 1
+    )
+    """)
+
+    # 12. Background Asynchronous Jobs
+    cur.execute("""
+    CREATE TABLE IF NOT EXISTS background_jobs (
+        job_id TEXT PRIMARY KEY,
+        job_type TEXT NOT NULL,
+        status TEXT NOT NULL DEFAULT 'queued',
+        progress_pct REAL DEFAULT 0.0,
+        created_at TEXT NOT NULL,
+        updated_at TEXT NOT NULL,
+        result_json TEXT,
+        error_message TEXT,
+        user_id TEXT
+    )
+    """)
+
+    # 13. Claim Human Audit Revisions
+    cur.execute("""
+    CREATE TABLE IF NOT EXISTS claim_revisions (
+        revision_id TEXT PRIMARY KEY,
+        claim_id TEXT NOT NULL,
+        memo_id TEXT,
+        original_text TEXT,
+        revised_text TEXT,
+        status TEXT,
+        previous_status TEXT,
+        new_status TEXT,
+        reviewer_id TEXT NOT NULL,
+        reviewer_notes TEXT,
+        reviewed_at TEXT,
+        timestamp TEXT
+    )
+    """)
+
     conn.commit()
     conn.close()
 
@@ -211,23 +320,30 @@ def init_database():
     sync_duckdb()
 
 def sync_duckdb():
-    """Sync processed parquet datasets into native DuckDB tables for high-speed OLAP queries."""
+    """Sync processed parquet datasets into native DuckDB tables for high-speed OLAP queries.
+    Uses a thread lock to ensure safe atomic updates without concurrent lock collision.
+    """
     from atlas.core.config import PROCESSED_DATA_DIR
     obs_p = PROCESSED_DATA_DIR / "observations.parquet"
     ev_p = PROCESSED_DATA_DIR / "evidence_ledger.parquet"
 
-    dconn = get_duckdb_conn()
-    if obs_p.exists():
-        obs_path_str = str(obs_p).replace("\\", "/")
-        dconn.execute(f"CREATE OR REPLACE TABLE observations AS SELECT * FROM read_parquet('{obs_path_str}')")
-        dconn.execute("CREATE OR REPLACE VIEW v_observations AS SELECT * FROM observations")
-    
-    if ev_p.exists():
-        ev_path_str = str(ev_p).replace("\\", "/")
-        dconn.execute(f"CREATE OR REPLACE TABLE evidence_ledger AS SELECT * FROM read_parquet('{ev_path_str}')")
-        dconn.execute("CREATE OR REPLACE VIEW v_evidence AS SELECT * FROM evidence_ledger")
+    with _duckdb_write_lock:
+        try:
+            dconn = duckdb.connect(str(DUCKDB_PATH), read_only=False)
+            if obs_p.exists():
+                obs_path_str = str(obs_p).replace("\\", "/")
+                dconn.execute(f"CREATE OR REPLACE TABLE observations AS SELECT * FROM read_parquet('{obs_path_str}')")
+                dconn.execute("CREATE OR REPLACE VIEW v_observations AS SELECT * FROM observations")
+            
+            if ev_p.exists():
+                ev_path_str = str(ev_p).replace("\\", "/")
+                dconn.execute(f"CREATE OR REPLACE TABLE evidence_ledger AS SELECT * FROM read_parquet('{ev_path_str}')")
+                dconn.execute("CREATE OR REPLACE VIEW v_evidence AS SELECT * FROM evidence_ledger")
 
-    dconn.close()
+            dconn.close()
+        except Exception as e:
+            # Non-blocking graceful catch: if another process is holding lock, logged
+            print(f"[WARN] DuckDB sync deferred due to lock or file contention: {e}")
 
 if __name__ == "__main__":
     init_database()

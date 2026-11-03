@@ -19,24 +19,52 @@ def calculate_sha256(content_bytes: bytes) -> str:
     """Compute standard SHA-256 hexadecimal hash."""
     return hashlib.sha256(content_bytes).hexdigest()
 
-def fetch_world_bank_indicator(indicator_code: str, retries: int = 3, timeout: int = 25) -> Dict[str, Any]:
-    """Fetch indicator timeseries for the 5 target economies from the official World Bank API."""
+# Circuit breaker state tracking
+_circuit_breaker_failures: Dict[str, int] = {}
+CIRCUIT_BREAKER_THRESHOLD = 5
+
+def fetch_world_bank_indicator(indicator_code: str, retries: int = 4, timeout: int = 25) -> Dict[str, Any]:
+    """Fetch indicator timeseries for the 5 target economies from the official World Bank API.
+    Implements exponential backoff with jitter, HTTP 429 rate-limiting handling, and circuit breaking.
+    """
+    domain = "api.worldbank.org"
+    if _circuit_breaker_failures.get(domain, 0) >= CIRCUIT_BREAKER_THRESHOLD:
+        print(f"[CircuitBreaker] Calls to {domain} temporarily tripped due to consecutive failures.")
+        return {"url": "", "indicator": indicator_code, "data": [], "raw_bytes": b"[]", "status": "circuit_tripped"}
+
     country_query = ";".join(TARGET_ECONOMIES.keys())
     url = f"https://api.worldbank.org/v2/country/{country_query}/indicator/{indicator_code}?format=json&date=2011:2024&per_page=300"
     
+    import random
     for attempt in range(1, retries + 1):
         try:
-            resp = requests.get(url, timeout=timeout)
+            resp = requests.get(url, timeout=timeout, headers={"User-Agent": "ATLAS-Research-Intelligence/1.0"})
+            
+            # Handle rate-limit (HTTP 429) explicitly
+            if resp.status_code == 429:
+                retry_after = int(resp.headers.get("Retry-After", 5))
+                time.sleep(retry_after)
+                continue
+                
             resp.raise_for_status()
             data = resp.json()
+            
+            # Reset circuit breaker on success
+            _circuit_breaker_failures[domain] = 0
+            
             if isinstance(data, list) and len(data) > 1:
-                return {"url": url, "indicator": indicator_code, "data": data[1], "raw_bytes": resp.content}
+                return {"url": url, "indicator": indicator_code, "data": data[1], "raw_bytes": resp.content, "status": "success"}
         except Exception as e:
+            _circuit_breaker_failures[domain] = _circuit_breaker_failures.get(domain, 0) + 1
             if attempt == retries:
-                print(f"[Warning] Failed to fetch {indicator_code} from World Bank API: {e}")
-                return {"url": url, "indicator": indicator_code, "data": [], "raw_bytes": b"[]"}
-            time.sleep(2)
-    return {"url": url, "indicator": indicator_code, "data": [], "raw_bytes": b"[]"}
+                print(f"[Warning] Failed to fetch {indicator_code} from World Bank API after {retries} attempts: {e}")
+                return {"url": url, "indicator": indicator_code, "data": [], "raw_bytes": b"[]", "status": "failed"}
+            
+            # Exponential backoff with random jitter (e.g. 1.5s, 3.2s, 6.4s)
+            backoff = (1.5 * (2 ** (attempt - 1))) + random.uniform(0.1, 0.6)
+            time.sleep(backoff)
+            
+    return {"url": url, "indicator": indicator_code, "data": [], "raw_bytes": b"[]", "status": "exhausted"}
 
 def fetch_official_benchmarks() -> Dict[str, str]:
     """Download official public benchmark test splits."""

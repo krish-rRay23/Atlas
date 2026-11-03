@@ -83,24 +83,62 @@ class ComparabilityAssessment(BaseModel):
     indicator_code: str
     country_a: str
     country_b: str
-    classification: Literal["comparable", "comparable_with_caveats", "not_comparable", "insufficient_information"]
+    classification: Literal["comparable", "conditionally_comparable", "comparable_with_caveats", "not_comparable", "insufficient_information"]
     justification: str
     rule_applied: str
+    rule_version: str = "2.0"
     unit_consistency: bool
     denominator_consistency: bool
     population_consistency: bool
     methodology_consistency: bool
     period_consistency: bool
+    # Extended 10-dimensional empirical tracking
+    definition_consistency: bool = True
+    scale_consistency: bool = True
+    geographic_scope_consistency: bool = True
+    frequency_consistency: bool = True
+    reliability_consistency: bool = True
+    matched_dimensions: List[str] = Field(default_factory=list)
+    differing_dimensions: List[str] = Field(default_factory=list)
+    caveats: List[str] = Field(default_factory=list)
+    transformation_permissible: bool = False
 
 class ClaimValidation(BaseModel):
     claim_id: str
     claim_text: str
     referenced_evidence_ids: List[str]
-    status: Literal["supported", "partially_supported", "contradicted", "unverified", "missing_evidence"]
+    status: Literal["supported", "partially_supported", "contradicted", "unsupported", "unverified", "missing_evidence", "ambiguous"]
     numerical_fidelity_score: float = Field(..., ge=0.0, le=1.0)
     temporal_match: bool
     geographic_match: bool
     explanation: str
+
+class User(BaseModel):
+    user_id: str
+    username: str
+    role: Literal["admin", "researcher", "reviewer", "reader"]
+    created_at: str
+    is_active: bool = True
+
+class BackgroundJob(BaseModel):
+    job_id: str
+    job_type: str
+    status: Literal["queued", "running", "completed", "failed", "cancelled"]
+    progress_pct: float = 0.0
+    created_at: str
+    updated_at: str
+    result: Optional[Dict[str, Any]] = None
+    error_message: Optional[str] = None
+    user_id: Optional[str] = None
+
+class ClaimRevision(BaseModel):
+    revision_id: str
+    claim_id: str
+    previous_status: str
+    new_status: str
+    reviewer_id: str
+    reviewer_notes: Optional[str] = None
+    timestamp: str
 
 class ResearchMemoSection(BaseModel):
     section_number: int

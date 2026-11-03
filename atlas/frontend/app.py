@@ -13,14 +13,18 @@ import time
 import datetime
 from pathlib import Path
 
+import uuid
+
 from atlas.core.config import TARGET_ECONOMIES
-from atlas.core.db import get_sqlite_conn, get_duckdb_conn
+from atlas.core.db import get_sqlite_conn, get_duckdb_read_conn, check_db_health
 from atlas.evidence.ledger import EvidenceLedgerService
 from atlas.comparability.asiametric import AsiaMetricEngine
 from atlas.synthesis.engine import ResearchSynthesisEngine
 from atlas.evaluation.runner import run_all_benchmarks
 from atlas.economics.calculator import EconomicsCalculator
 from atlas.sources.registry import OFFICIAL_SOURCES, OFFICIAL_INDICATORS
+from atlas.core.jobs import JobService
+from atlas.core.observability import get_system_metrics
 
 # Page configuration
 st.set_page_config(
@@ -395,7 +399,25 @@ elif selected_section == "4. Evidence Ledger":
                 review_note = st.text_input("Audit Note", value=sel_ev.get("reviewer_notes") or "Analyst verified")
                 if st.button("Save Audit Decision"):
                     EvidenceLedgerService.update_review_status(sel_ev_id, new_status, review_note, True)
-                    st.success(f"Updated {sel_ev_id} to {new_status}!")
+                    # Persist to immutable claim_revisions audit trail
+                    conn = get_sqlite_conn()
+                    cur = conn.cursor()
+                    rev_id = f"REV-{uuid.uuid4().hex[:10].upper()}"
+                    now_ts = datetime.datetime.now(datetime.timezone.utc).isoformat()
+                    decision_mapped = "ACCEPTED" if new_status == "verified" else ("REJECTED" if new_status == "rejected" else "MODIFIED")
+                    cur.execute("""
+                    INSERT INTO claim_revisions (
+                        revision_id, claim_id, memo_id, original_text, revised_text,
+                        status, reviewer_notes, reviewer_id, reviewed_at
+                    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+                    """, (
+                        rev_id, sel_ev_id, None, sel_ev['citation_text'],
+                        sel_ev['citation_text'], decision_mapped,
+                        review_note, "ANALYST-WORKSTATION", now_ts
+                    ))
+                    conn.commit()
+                    conn.close()
+                    st.success(f"Updated {sel_ev_id} to {new_status} and logged audit revision {rev_id}!")
                     st.rerun()
 
 # ==============================================================================
@@ -565,15 +587,67 @@ elif selected_section == "7. Research Reports":
         )
 
         st.divider()
-        for s in sections:
-            with st.container():
-                st.markdown(f"#### {s['title']}")
-                st.markdown(s["content"])
-                if s.get("citations"):
-                    st.caption(f"🔗 Citations: `{', '.join(s['citations'])}`")
-                if s.get("interpretations"):
-                    st.warning("⚠️ **Analytical Interpretations (Separated from Observed Facts):**\n" + "\n".join([f"• {i}" for i in s['interpretations']]))
-                st.markdown("")
+
+        tab_memo, tab_audit_revision = st.tabs(["📄 Memo Deliverable", "⚖️ Human Review & Claim Revision Ledger"])
+
+        with tab_memo:
+            for s in sections:
+                with st.container():
+                    st.markdown(f"#### {s['title']}")
+                    st.markdown(s["content"])
+                    if s.get("citations"):
+                        st.caption(f"🔗 Citations: `{', '.join(s['citations'])}`")
+                    if s.get("interpretations"):
+                        st.warning("⚠️ **Analytical Interpretations (Separated from Observed Facts):**\n" + "\n".join([f"• {i}" for i in s['interpretations']]))
+                    st.markdown("")
+
+        with tab_audit_revision:
+            st.subheader("Human Audit & Claim Revision Governance")
+            st.markdown("Record, track, and persist expert reviewer modifications, claim approvals, and refutations.")
+
+            conn = get_sqlite_conn()
+            cur = conn.cursor()
+            cur.execute("SELECT revision_id, claim_id, original_text, revised_text, status, reviewer_notes, reviewer_id, reviewed_at FROM claim_revisions WHERE memo_id = ? OR memo_id IS NULL ORDER BY reviewed_at DESC LIMIT 50", (sel_m_id,))
+            rev_rows = [dict(r) for r in cur.fetchall()]
+            conn.close()
+
+            if rev_rows:
+                st.markdown("**Historical Audit Revision Log:**")
+                st.dataframe(pd.DataFrame(rev_rows), use_container_width=True)
+            else:
+                st.info("No prior human audit revisions recorded for this memo. All synthesized claims are in provisional state.")
+
+            st.markdown("---")
+            st.markdown("#### Submit New Expert Revision / Approval")
+            rc1, rc2 = st.columns([1, 1])
+            with rc1:
+                rev_claim_id = st.text_input("Claim / Reference ID", value=f"CLM-{sel_m_id[-6:]}-01")
+                rev_decision = st.selectbox("Audit Decision", ["ACCEPTED", "REJECTED", "MODIFIED"], index=0)
+                reviewer_name = st.text_input("Reviewer Identity", value="Senior Quantitative Reviewer")
+            with rc2:
+                rev_notes = st.text_area("Reviewer Audit Justification & Caveats", value="Verified against official central bank statistical release.")
+
+            orig_text_input = st.text_area("Original Claim Text (as synthesized)", value="India achieved 77.5% account ownership under PMJDY.")
+            revised_text_input = st.text_area("Revised / Approved Text", value=orig_text_input if rev_decision != "MODIFIED" else "India achieved 77.5% account ownership (WB Findex 2021) with PMJDY driving rural female adoption.")
+
+            if st.button("💾 Commit Expert Audit Revision", type="primary"):
+                conn = get_sqlite_conn()
+                cur = conn.cursor()
+                new_rev_id = f"REV-{uuid.uuid4().hex[:10].upper()}"
+                now_ts = datetime.datetime.now(datetime.timezone.utc).isoformat()
+                cur.execute("""
+                INSERT INTO claim_revisions (
+                    revision_id, claim_id, memo_id, original_text, revised_text,
+                    status, reviewer_notes, reviewer_id, reviewed_at
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+                """, (
+                    new_rev_id, rev_claim_id, sel_m_id, orig_text_input,
+                    revised_text_input, rev_decision, rev_notes, reviewer_name, now_ts
+                ))
+                conn.commit()
+                conn.close()
+                st.success(f"Audit decision committed as {new_rev_id}! Status: {rev_decision}")
+                st.rerun()
 
 # ==============================================================================
 # SECTION 8: EVALUATION LAB
@@ -644,6 +718,58 @@ elif selected_section == "9. Economics & Observability":
     sc_df = pd.DataFrame(econ.scenarios).T.reset_index().rename(columns={"index": "Scenario"})
     st.table(sc_df[["Scenario", "manual_hours", "assisted_hours", "time_saved_pct", "productivity_multiple", "cost_per_output_usd", "annual_capacity_unlocked_hours"]])
     st.caption("ℹ️ Methodological Governance Note: Unlocked analyst capacity represents reallocated professional hours, strictly distinguished from realized cash savings.")
+
+    st.subheader("Operational Telemetry & System Health")
+    sys_metrics = get_system_metrics()
+    db_health = check_db_health()
+    
+    sh1, sh2, sh3, sh4 = st.columns(4)
+    sh1.metric("Storage Status", f"SQLite: {db_health.get('sqlite')} | DuckDB: {db_health.get('duckdb')}")
+    sh2.metric("API Requests", sys_metrics["api"]["total_requests"])
+    sh3.metric("Avg Latency (ms)", f"{sys_metrics['api']['average_latency_ms']:.1f} ms")
+    sh4.metric("Error Rate", f"{sys_metrics['api']['error_rate_pct']:.1f}%")
+
+    st.subheader("Asynchronous Background Task Manager")
+    st.markdown("Submit long-running tasks to the multi-threaded worker pool with real-time status and progress tracking.")
+
+    jb1, jb2, jb3 = st.columns(3)
+    with jb1:
+        if st.button("⚡ Enqueue Memo Synthesis", use_container_width=True):
+            jid = JobService.create_job("generate_memo", user_id="STREAMLIT-ANALYST")
+            def _memo_task():
+                engine = ResearchSynthesisEngine()
+                m = engine.generate_comparative_memo("PROJ-DEFAULT")
+                return {"memo_id": m.memo_id, "status": "completed"}
+            JobService.submit_task(jid, _memo_task)
+            st.success(f"Enqueued {jid}!")
+            st.rerun()
+
+    with jb2:
+        if st.button("⚡ Enqueue Asynchronous Benchmarks", use_container_width=True):
+            jid = JobService.create_job("run_benchmarks", user_id="STREAMLIT-ANALYST")
+            def _bench_task():
+                return run_all_benchmarks()
+            JobService.submit_task(jid, _bench_task)
+            st.success(f"Enqueued {jid}!")
+            st.rerun()
+
+    with jb3:
+        if st.button("⚡ Enqueue DuckDB Analytical Sync", use_container_width=True):
+            from atlas.core.db import sync_duckdb
+            jid = JobService.create_job("sync_duckdb", user_id="STREAMLIT-ANALYST")
+            def _sync_task():
+                sync_duckdb()
+                return {"synced": True}
+            JobService.submit_task(jid, _sync_task)
+            st.success(f"Enqueued {jid}!")
+            st.rerun()
+
+    recent_jobs = JobService.list_jobs(limit=15)
+    if recent_jobs:
+        st.markdown("**Recent Background Tasks:**")
+        st.dataframe(pd.DataFrame(recent_jobs)[["job_id", "job_type", "status", "progress_pct", "created_at", "updated_at", "error_message"]], use_container_width=True)
+    else:
+        st.info("No background jobs queued in current session.")
 
     st.subheader("Inference Model Telemetry Log")
     conn = get_sqlite_conn()
