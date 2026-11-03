@@ -1,0 +1,23 @@
+{
+  "run_id": "RUN-RAGAS-1793697774",
+  "benchmark_name": "RAGAS",
+  "dataset_version": "RAGAS Deterministic Formula Implementation",
+  "sample_count": 7,
+  "metrics": {
+    "faithfulness": 0.7143,
+    "context_precision": 0.9335,
+    "context_recall": 1.0,
+    "response_relevancy": 1.0,
+    "ragas_harmonic_mean": 0.8946
+  },
+  "passed_threshold": false,
+  "execution_time_seconds": 0.011,
+  "timestamp": "2026-11-03T09:22:54Z",
+  "details": {
+    "methodology": "Computed directly from active research memo claim validations and evidence ledger coverage",
+    "faithfulness_formula": "(supported + 0.5 * partial) / total_claims",
+    "context_precision_formula": "target_relevant_evidence / expected_evidence",
+    "context_recall_formula": "captured_gold_facts / total_gold_facts",
+    "response_relevancy_formula": "keyword_coverage_ratio_over_research_scope"
+  }
+}

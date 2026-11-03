@@ -1,0 +1,24 @@
+{
+  "run_id": "RUN-INDOMAIN-1793699241",
+  "benchmark_name": "InDomainGold",
+  "dataset_version": "v1.0-official-2024",
+  "sample_count": 35,
+  "metrics": {
+    "overall_accuracy": 1.0,
+    "unweighted_accuracy": 1.0,
+    "weighted_composite_score": 1.0,
+    "numeric_extraction_accuracy": 1.0,
+    "comparability_rule_accuracy": 1.0,
+    "claim_verification_accuracy": 1.0,
+    "total_samples": 35.0,
+    "passed_samples": 35.0
+  },
+  "passed_threshold": true,
+  "execution_time_seconds": 0.016,
+  "timestamp": "2026-11-03T09:47:21Z",
+  "details": {
+    "evaluation_methodology": "Exact authoritative observations matching World Bank Findex, IMF FAS, and central bank records",
+    "samples_evaluated": 35,
+    "passed_count": 35
+  }
+}

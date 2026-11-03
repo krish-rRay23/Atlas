@@ -1,0 +1,178 @@
+{
+  "run_id": "RUN-ALCE-1793701178",
+  "benchmark_name": "ALCE-Inspired In-Domain Citation Assessment",
+  "dataset_version": "In-Domain Memo Citation Assessment Protocol (ALCE-Inspired)",
+  "sample_count": 14,
+  "metrics": {
+    "citation_support_rate_cited": 0.6,
+    "citation_support_rate_all": 0.4286,
+    "citation_precision_necessity": 0.5,
+    "citation_coverage": 0.7143,
+    "claims_evaluated": 14.0,
+    "claims_with_citations": 10.0
+  },
+  "passed_threshold": false,
+  "execution_time_seconds": 0.015,
+  "timestamp": "2026-11-03T10:19:38Z",
+  "details": {
+    "metric_definitions": {
+      "citation_support_rate_cited": "Numerator: Supported claims with citations (5) + 0.5 * Partially supported (2) = 6.0. Denominator: Claims with citations = 10. Value: 0.6",
+      "citation_support_rate_all": "Numerator: Supported claims (5). Denominator: All memo claims (14). Value: 0.4286",
+      "citation_precision_necessity": "Numerator: Valid necessary citations corroborating claims (5). Denominator: Attached citations (10). Value: 0.5",
+      "citation_coverage": "Numerator: Claims with citation tags (10). Denominator: Total memo claims (14). Value: 0.7143"
+    },
+    "supported_count": 5,
+    "partially_supported_count": 2,
+    "contradicted_count": 3,
+    "unverified_count": 4,
+    "eval_records": [
+      {
+        "id": "ALCE-01",
+        "claim": "India achieved 89.02% adult account ownership in 2024 according to the World Bank Global Findex.",
+        "has_citation": true,
+        "citations": [
+          "EV-IND_FX.OWN.TOTL.ZS_2024"
+        ],
+        "status": "supported",
+        "fidelity": 1.0,
+        "explanation": "Fully verified against referenced authoritative evidence records."
+      },
+      {
+        "id": "ALCE-02",
+        "claim": "Thailand recorded 91.80% adult account ownership in 2024, leading Southeast Asia in formal banking reach.",
+        "has_citation": true,
+        "citations": [
+          "EV-THA_FX.OWN.TOTL.ZS_2024"
+        ],
+        "status": "supported",
+        "fidelity": 1.0,
+        "explanation": "Fully verified against referenced authoritative evidence records."
+      },
+      {
+        "id": "ALCE-03",
+        "claim": "Vietnam reached 80.20% adult account ownership in 2024.",
+        "has_citation": true,
+        "citations": [
+          "EV-VNM_FX.OWN.TOTL.ZS_2024"
+        ],
+        "status": "contradicted",
+        "fidelity": 0.0,
+        "explanation": "Contradiction detected: Cited number 80.2 diverges significantly from evidence values [70.5508]"
+      },
+      {
+        "id": "ALCE-04",
+        "claim": "Indonesia adult account ownership stands at 56.33% in 2024.",
+        "has_citation": true,
+        "citations": [
+          "EV-IDN_FX.OWN.TOTL.ZS_2024"
+        ],
+        "status": "supported",
+        "fidelity": 1.0,
+        "explanation": "Fully verified against referenced authoritative evidence records."
+      },
+      {
+        "id": "ALCE-05",
+        "claim": "The Philippines registered 54.00% adult account ownership in 2024.",
+        "has_citation": true,
+        "citations": [
+          "EV-PHL_FX.OWN.TOTL.ZS_2024"
+        ],
+        "status": "partially_supported",
+        "fidelity": 0.0,
+        "explanation": "Partially supported: geographic or temporal alignment confirmed, but numeric precision exhibits variance."
+      },
+      {
+        "id": "ALCE-06",
+        "claim": "India UPI processed over 131.0 billion transactions in FY24.",
+        "has_citation": true,
+        "citations": [
+          "EV-IND_NAT.DIGITAL.PAY.VOL_2024"
+        ],
+        "status": "contradicted",
+        "fidelity": 0.0,
+        "explanation": "Contradiction detected: Cited number 131.0 diverges significantly from evidence values [182.5]; Cited number 24.0 diverges significantly from evidence values [182.5]"
+      },
+      {
+        "id": "ALCE-07",
+        "claim": "Indonesia QRIS processed 6.24 billion transactions in 2024.",
+        "has_citation": true,
+        "citations": [
+          "EV-IDN_NAT.DIGITAL.PAY.VOL_2024"
+        ],
+        "status": "supported",
+        "fidelity": 1.0,
+        "explanation": "Fully verified against referenced authoritative evidence records."
+      },
+      {
+        "id": "ALCE-08",
+        "claim": "Thailand PromptPay registered 10.20 billion transactions in 2024.",
+        "has_citation": true,
+        "citations": [
+          "EV-THA_NAT.DIGITAL.PAY.VOL_2024"
+        ],
+        "status": "contradicted",
+        "fidelity": 0.0,
+        "explanation": "Contradiction detected: Cited number 10.2 diverges significantly from evidence values [24.1]"
+      },
+      {
+        "id": "ALCE-09",
+        "claim": "The Philippines digital payment share reached 52.80% of total retail monthly volume in 2023.",
+        "has_citation": true,
+        "citations": [
+          "EV-PHL_NAT.DIGITAL.PAY.SHARE_2023"
+        ],
+        "status": "supported",
+        "fidelity": 1.0,
+        "explanation": "Fully verified against referenced authoritative evidence records."
+      },
+      {
+        "id": "ALCE-10",
+        "claim": "Vietnam commercial bank branch density stood at 4.25 branches per 100,000 adults in 2024.",
+        "has_citation": true,
+        "citations": [
+          "EV-VNM_FB.CBK.BRCH.P5_2024"
+        ],
+        "status": "partially_supported",
+        "fidelity": 0.5,
+        "explanation": "Partially supported: geographic or temporal alignment confirmed, but numeric precision exhibits variance."
+      },
+      {
+        "id": "ALCE-11",
+        "claim": "Fast payment switches have dramatically expanded digital transaction throughput across emerging Asian markets.",
+        "has_citation": false,
+        "citations": [],
+        "status": "missing_evidence",
+        "fidelity": 0.0,
+        "explanation": "No evidence records were referenced for this factual claim. Citations are mandatory."
+      },
+      {
+        "id": "ALCE-12",
+        "claim": "Interoperable QR payment standards lower merchant onboarding barriers significantly.",
+        "has_citation": false,
+        "citations": [],
+        "status": "missing_evidence",
+        "fidelity": 0.0,
+        "explanation": "No evidence records were referenced for this factual claim. Citations are mandatory."
+      },
+      {
+        "id": "ALCE-13",
+        "claim": "Financial access initiatives require balanced attention to account usage velocity beyond headline ownership.",
+        "has_citation": false,
+        "citations": [],
+        "status": "missing_evidence",
+        "fidelity": 0.0,
+        "explanation": "No evidence records were referenced for this factual claim. Citations are mandatory."
+      },
+      {
+        "id": "ALCE-14",
+        "claim": "Cross-border payment linkage initiatives will increasingly shape regional financial integration.",
+        "has_citation": false,
+        "citations": [],
+        "status": "missing_evidence",
+        "fidelity": 0.0,
+        "explanation": "No evidence records were referenced for this factual claim. Citations are mandatory."
+      }
+    ],
+    "sample_disclosure": "Evaluated across 14 claims extracted from synthesized research memo MEMO-90504B33 / MEMO-F0C9ABA9"
+  }
+}

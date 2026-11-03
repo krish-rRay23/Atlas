@@ -1,0 +1,29 @@
+{
+  "run_id": "RUN-ALCE-1793698939",
+  "benchmark_name": "ALCE-Inspired In-Domain Citation Assessment",
+  "dataset_version": "In-Domain Memo Citation Assessment Protocol (ALCE-Inspired)",
+  "sample_count": 28,
+  "metrics": {
+    "citation_precision": 0.7143,
+    "citation_recall": 0.4286,
+    "citation_coverage": 1.0,
+    "citation_f1": 0.5357,
+    "claims_evaluated": 28.0,
+    "claims_with_citations": 28.0
+  },
+  "passed_threshold": true,
+  "execution_time_seconds": 0.003,
+  "timestamp": "2026-11-03T09:42:19Z",
+  "details": {
+    "metric_definitions": {
+      "citation_precision": "Numerator: Supported claims with citations (12) + 0.5 * Partially supported (16) = 20.0. Denominator: Claims with citations = 28. Value: 0.7143",
+      "citation_recall": "Numerator: Supported claims verified against ledger (12). Denominator: Verifiable evidence claims (28). Value: 0.4286",
+      "citation_coverage": "Numerator: Claims containing citation tags (28). Denominator: Total memo claims (28). Value: 1.0"
+    },
+    "supported_count": 12,
+    "partially_supported_count": 16,
+    "contradicted_count": 0,
+    "unverified_count": 0,
+    "sample_disclosure": "Evaluated across 28 claims extracted from synthesized research memo MEMO-90504B33"
+  }
+}

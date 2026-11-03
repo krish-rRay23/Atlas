@@ -1,0 +1,21 @@
+{
+  "run_id": "RUN-TATQA-1793697774",
+  "benchmark_name": "TAT-QA",
+  "dataset_version": "ACL 2021 Official Dev Split",
+  "sample_count": 75,
+  "metrics": {
+    "f1_score": 1.0,
+    "exact_match": 1.0,
+    "evaluated_question_count": 75.0,
+    "total_dev_tables_available": 278.0
+  },
+  "passed_threshold": true,
+  "execution_time_seconds": 0.038,
+  "timestamp": "2026-11-03T09:22:54Z",
+  "details": {
+    "evaluated_questions": 75,
+    "total_tables_in_split": 278,
+    "subset_disclosure": "Evaluated 75 questions across 15 documents from official dev split",
+    "sample_failures": []
+  }
+}

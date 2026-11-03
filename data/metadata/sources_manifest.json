@@ -1,0 +1,117 @@
+{
+  "manifest_version": "2.0-verified",
+  "audit_verification_date": "2026-11-03T15:15:00Z",
+  "acquisition_classifications": {
+    "automated_rest_downloads": {
+      "description": "Raw JSON payloads downloaded directly from official REST API endpoints via HTTP GET",
+      "records": {
+        "FX.OWN.TOTL.ZS": {
+          "indicator_name": "Account ownership at a financial institution or with a mobile-money-service provider (% of population ages 15+)",
+          "source_publisher": "World Bank Global Findex Database",
+          "source_url": "https://api.worldbank.org/v2/country/IND;IDN;VNM;THA;PHL/indicator/FX.OWN.TOTL.ZS?format=json&date=2011:2024&per_page=300",
+          "local_file": "data/raw/wb_FX_OWN_TOTL_ZS.json",
+          "sha256": "730d8a54600b3e336427fd02ca8fe2fd66c76bba40a7f930f3d00701745cfb48",
+          "records_fetched": 70
+        },
+        "FX.OWN.TOTL.FE.ZS": {
+          "indicator_name": "Account ownership, female (% of females ages 15+)",
+          "source_publisher": "World Bank Global Findex Database",
+          "source_url": "https://api.worldbank.org/v2/country/IND;IDN;VNM;THA;PHL/indicator/FX.OWN.TOTL.FE.ZS?format=json&date=2011:2024&per_page=300",
+          "local_file": "data/raw/wb_FX_OWN_TOTL_FE_ZS.json",
+          "sha256": "f311b2c5cc9de04f28e6a152871b73f1dca7aef6b5a4709e52f8959e0119bdb5",
+          "records_fetched": 70
+        },
+        "FX.OWN.TOTL.MA.ZS": {
+          "indicator_name": "Account ownership, male (% of males ages 15+)",
+          "source_publisher": "World Bank Global Findex Database",
+          "source_url": "https://api.worldbank.org/v2/country/IND;IDN;VNM;THA;PHL/indicator/FX.OWN.TOTL.MA.ZS?format=json&date=2011:2024&per_page=300",
+          "local_file": "data/raw/wb_FX_OWN_TOTL_MA_ZS.json",
+          "sha256": "1aed57adcee4537ba8e3cc348b3e4373f03b152c914f4323478223d1c671ede1",
+          "records_fetched": 70
+        },
+        "FX.OWN.TOTL.PL.ZS": {
+          "indicator_name": "Account ownership, poorest 40% (% of population ages 15+)",
+          "source_publisher": "World Bank Global Findex Database",
+          "source_url": "https://api.worldbank.org/v2/country/IND;IDN;VNM;THA;PHL/indicator/FX.OWN.TOTL.PL.ZS?format=json&date=2011:2024&per_page=300",
+          "local_file": "data/raw/wb_FX_OWN_TOTL_PL_ZS.json",
+          "sha256": "0f73de48d7287e2218a9cf883052c21c8e05d9f8c3b4e8fc2927d8d42736c212",
+          "records_fetched": 70
+        },
+        "FB.CBK.BRCH.P5": {
+          "indicator_name": "Commercial bank branches (per 100,000 adults)",
+          "source_publisher": "IMF Financial Access Survey (via World Bank API Mirror)",
+          "source_url": "https://api.worldbank.org/v2/country/IND;IDN;VNM;THA;PHL/indicator/FB.CBK.BRCH.P5?format=json&date=2011:2024&per_page=300",
+          "local_file": "data/raw/wb_FB_CBK_BRCH_P5.json",
+          "sha256": "ccdf71a7164fc7da4c90051ccc1c1ee639b9334b394a38f7cc0dd3710fa4c0f3",
+          "records_fetched": 70
+        },
+        "FB.ATM.TOTL.P5": {
+          "indicator_name": "Automated teller machines (ATMs) (per 100,000 adults)",
+          "source_publisher": "IMF Financial Access Survey (via World Bank API Mirror)",
+          "source_url": "https://api.worldbank.org/v2/country/IND;IDN;VNM;THA;PHL/indicator/FB.ATM.TOTL.P5?format=json&date=2011:2024&per_page=300",
+          "local_file": "data/raw/wb_FB_ATM_TOTL_P5.json",
+          "sha256": "196c1a3f37bd5e0dbf4f30d0510de64562c5ca7e02da12807728709de2ccc7aa",
+          "records_fetched": 70
+        },
+        "IT.NET.USER.ZS": {
+          "indicator_name": "Individuals using the Internet (% of population)",
+          "source_publisher": "ITU Telecommunication Indicators (via World Bank WDI API)",
+          "source_url": "https://api.worldbank.org/v2/country/IND;IDN;VNM;THA;PHL/indicator/IT.NET.USER.ZS?format=json&date=2011:2024&per_page=300",
+          "local_file": "data/raw/wb_IT_NET_USER_ZS.json",
+          "sha256": "93cf22a95c13cda1faacb808af527c0500b34b7394637001045527681e240293",
+          "records_fetched": 70
+        },
+        "IT.CEL.SETS.P2": {
+          "indicator_name": "Mobile cellular subscriptions (per 100 people)",
+          "source_publisher": "ITU Telecommunication Indicators (via World Bank WDI API)",
+          "source_url": "https://api.worldbank.org/v2/country/IND;IDN;VNM;THA;PHL/indicator/IT.CEL.SETS.P2?format=json&date=2011:2024&per_page=300",
+          "local_file": "data/raw/wb_IT_CEL_SETS_P2.json",
+          "sha256": "2140c94490ada4873c03ad8667c3c18694a3cbb66c264d4b9ab739e27a752e6c",
+          "records_fetched": 70
+        },
+        "NY.GDP.PCAP.CD": {
+          "indicator_name": "GDP per capita (current US$)",
+          "source_publisher": "World Bank National Accounts Data",
+          "source_url": "https://api.worldbank.org/v2/country/IND;IDN;VNM;THA;PHL/indicator/NY.GDP.PCAP.CD?format=json&date=2011:2024&per_page=300",
+          "local_file": "data/raw/wb_NY_GDP_PCAP_CD.json",
+          "sha256": "4ed607df2723744acfc376245243c4944983f8625cadda3ef99e1736f713d7da",
+          "records_fetched": 70
+        }
+      }
+    },
+    "curated_primary_extractions": {
+      "description": "Structured JSON containing hand-curated administrative records extracted directly from official central bank annual reports and GSMA industry publications with exact citations",
+      "local_file": "data/raw/central_banks_and_gsma.json",
+      "sha256": "bd009dda6971f81c959c2c5c2d54417223ebb21a0dd580d8112ab4d7128ff520",
+      "record_count": 16,
+      "primary_sources_cited": [
+        "Reserve Bank of India (RBI) Annual Report 2023-24, Payment and Settlement Systems Chapter",
+        "Bank Indonesia (BI) Payment Systems Statistics & Annual Report 2024 (QRIS Ecosystem Metrics)",
+        "Bank of Thailand (BOT) Payment Systems Report 2023 (PromptPay Annual Statistics)",
+        "Bangko Sentral ng Pilipinas (BSP) 2023 Report on the State of Digital Payments in the Philippines",
+        "State Bank of Vietnam (SBV) Payment Department Official Statistics Bulletin 2024",
+        "GSMA State of the Industry Report on Mobile Money 2024"
+      ]
+    },
+    "official_benchmarks": {
+      "description": "Official evaluation splits downloaded from authoritative academic GitHub repositories",
+      "records": {
+        "FinQA": {
+          "split": "test.json",
+          "repository": "https://github.com/czyssrs/FinQA",
+          "local_file": "data/benchmarks/finqa_test.json",
+          "sha256": "831dbfb2e785dbc227f895ce3f24046433467aec67b09db2bd6ac7692a8a30dc",
+          "total_examples": 1147
+        },
+        "TAT-QA": {
+          "split": "tatqa_dataset_dev.json",
+          "repository": "https://github.com/NExT-GPT/TAT-QA",
+          "local_file": "data/benchmarks/tatqa_dev.json",
+          "sha256": "8da095a819af6db3c14877c6df2d4d29960e41d1a63dd1fa853507bd2a616af5",
+          "total_tables": 278,
+          "total_questions": 1668
+        }
+      }
+    }
+  }
+}

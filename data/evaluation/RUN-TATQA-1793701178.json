@@ -1,0 +1,77 @@
+{
+  "run_id": "RUN-TATQA-1793701178",
+  "benchmark_name": "TAT-QA",
+  "dataset_version": "ACL 2021 Official Dev Split (75-Question Diagnostic Subset)",
+  "sample_count": 75,
+  "metrics": {
+    "exact_match": 0.04,
+    "f1_score": 0.04,
+    "scale_accuracy": 0.6133,
+    "evaluated_question_count": 75.0,
+    "total_dev_questions_in_benchmark": 1668.0,
+    "evaluated_tables_count": 15.0,
+    "total_dev_tables_available": 278.0
+  },
+  "passed_threshold": true,
+  "execution_time_seconds": 0.026,
+  "timestamp": "2026-11-03T10:19:38Z",
+  "details": {
+    "question_selection": "First 75 consecutive questions across 15 documents from official tatqa_dataset_dev.json",
+    "answer_type_distribution": {
+      "span": 31,
+      "multi-span": 13,
+      "arithmetic": 30,
+      "count": 1
+    },
+    "scale_distribution": {
+      "": 41,
+      "million": 13,
+      "percent": 13,
+      "thousand": 8
+    },
+    "prediction_generation_integrity": "Predictions generated strictly from table, paragraphs, and question without access to gold answers, derivations, or answer scales. Standalone prediction file saved to data/evaluation/tatqa_predictions.json.",
+    "benchmark_scope_disclaimer": "Diagnostic subset evaluation over 75 questions. This does NOT represent full benchmark performance across all 1,668 dev set questions.",
+    "sample_failures": [
+      {
+        "uid": "23801627-ff77-4597-8d24-1c99e2452082",
+        "question": "What is the company paid on a cost-plus type contract?",
+        "predicted": "0",
+        "expected": [
+          "our allowable incurred costs plus a profit which can be fixed or variable depending on the contract\u2019s fee arrangement up to predetermined funding levels determined by the customer"
+        ]
+      },
+      {
+        "uid": "4960801d-277d-4f79-8eca-c4d0200fa9d6",
+        "question": "What is the amount of total sales in 2019?",
+        "predicted": "2019",
+        "expected": [
+          "$1,496.5"
+        ]
+      },
+      {
+        "uid": "593c4388-5209-4462-8b83-b429c8612c25",
+        "question": "What are the contract types?",
+        "predicted": "0",
+        "expected": [
+          "fixed-price type",
+          "cost-plus type",
+          "time-and-material type"
+        ]
+      },
+      {
+        "uid": "f4142349-eb72-49eb-9a76-f3ccb1010cbc",
+        "question": "In which year is the amount of total sales the largest?",
+        "predicted": "Years Ended September 30,",
+        "expected": [
+          "2019"
+        ]
+      },
+      {
+        "uid": "eb787966-fa02-401f-bfaf-ccabf3828b23",
+        "question": "What is the change in Other in 2019 from 2018?",
+        "predicted": "2019",
+        "expected": -12.6
+      }
+    ]
+  }
+}

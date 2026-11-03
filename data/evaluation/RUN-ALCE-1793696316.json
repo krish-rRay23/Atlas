@@ -1,0 +1,16 @@
+{
+  "run_id": "RUN-ALCE-1793696316",
+  "benchmark_name": "ALCE",
+  "dataset_version": "EMNLP 2023 Protocol",
+  "sample_count": 21,
+  "metrics": {
+    "citation_precision": 0.381,
+    "citation_recall": 0.5238,
+    "citation_f1": 0.4411,
+    "claims_evaluated": 21.0
+  },
+  "passed_threshold": false,
+  "execution_time_seconds": 0.003,
+  "timestamp": "2026-11-03T08:58:36Z",
+  "details": {}
+}

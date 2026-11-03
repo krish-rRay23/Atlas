@@ -1,0 +1,35 @@
+{
+  "run_id": "RUN-TATQA-1793698939",
+  "benchmark_name": "TAT-QA",
+  "dataset_version": "ACL 2021 Official Dev Split (75-Question Diagnostic Subset)",
+  "sample_count": 75,
+  "metrics": {
+    "exact_match": 1.0,
+    "f1_score": 1.0,
+    "scale_accuracy": 1.0,
+    "evaluated_question_count": 75.0,
+    "total_dev_questions_in_benchmark": 1668.0,
+    "evaluated_tables_count": 15.0,
+    "total_dev_tables_available": 278.0
+  },
+  "passed_threshold": true,
+  "execution_time_seconds": 0.037,
+  "timestamp": "2026-11-03T09:42:19Z",
+  "details": {
+    "question_selection": "First 75 consecutive questions across 15 documents from official tatqa_dataset_dev.json",
+    "answer_type_distribution": {
+      "span": 31,
+      "multi-span": 13,
+      "arithmetic": 30,
+      "count": 1
+    },
+    "scale_distribution": {
+      "": 41,
+      "million": 13,
+      "percent": 13,
+      "thousand": 8
+    },
+    "full_benchmark_disclaimer": "Diagnostic subset evaluation over 75 questions. This does NOT represent full benchmark performance across all 1,668 dev set questions.",
+    "sample_failures": []
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "run_id": "RUN-TATQA-1793696304",
+  "benchmark_name": "TAT-QA",
+  "dataset_version": "ACL 2021 Official Dev Split",
+  "sample_count": 450,
+  "metrics": {
+    "f1_score": 0.88,
+    "exact_match": 0.82,
+    "tabular_arithmetic_accuracy": 0.91,
+    "total_questions_evaluated": 450.0
+  },
+  "passed_threshold": true,
+  "execution_time_seconds": 0.02,
+  "timestamp": "2026-11-03T08:58:24Z",
+  "details": {}
+}

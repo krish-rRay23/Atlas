@@ -1,0 +1,41 @@
+{
+  "run_id": "RUN-FINQA-1793697789",
+  "benchmark_name": "FinQA",
+  "dataset_version": "EMNLP 2021 Official Test Split",
+  "sample_count": 20,
+  "metrics": {
+    "execution_accuracy": 0.85,
+    "program_accuracy": 0.799,
+    "evaluated_sample_count": 20.0,
+    "total_available_test_split": 1147.0
+  },
+  "passed_threshold": true,
+  "execution_time_seconds": 0.179,
+  "timestamp": "2026-11-03T09:23:09Z",
+  "details": {
+    "evaluated_subset": 20,
+    "total_available_in_split": 1147,
+    "subset_disclosure": "Evaluated 20 consecutive test samples out of 1147 total test samples",
+    "failed_count": 3,
+    "sample_failures": [
+      {
+        "id": "MRO/2011/page_108.pdf-1",
+        "program": "table_average(net change for the year, none)",
+        "expected": 3297.66667,
+        "executed_result": 0.0
+      },
+      {
+        "id": "RCL/2012/page_75.pdf-1",
+        "program": "divide(455, const_7)",
+        "expected": 65.0,
+        "executed_result": 0.0
+      },
+      {
+        "id": "ETR/2017/page_372.pdf-1",
+        "program": "add(703.1, 705.4), add(#0, const_2), divide(#1, const_2)",
+        "expected": 705.25,
+        "executed_result": 0.0
+      }
+    ]
+  }
+}

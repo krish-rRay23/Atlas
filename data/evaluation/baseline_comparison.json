@@ -1,0 +1,44 @@
+{
+  "Manual Research": {
+    "machine_processing_time_minutes": 0.0,
+    "human_active_time_minutes": 240.0,
+    "total_elapsed_workflow_time_minutes": 240.0,
+    "numeric_accuracy_pct": 84.0,
+    "citation_correctness_pct": 78.0,
+    "unsupported_claim_rate_pct": 12.0,
+    "comparability_errors_count": 6,
+    "model_cost_usd": 0.0,
+    "human_labor_cost_usd": 260.0,
+    "total_cost_per_accepted_deliverable_usd": 260.0,
+    "data_status": "Hypothetical Model Assumptions"
+  },
+  "Basic Naive LLM": {
+    "machine_processing_time_minutes": 0.06,
+    "human_active_time_minutes": 110.0,
+    "total_elapsed_workflow_time_minutes": 110.1,
+    "numeric_accuracy_pct": 62.5,
+    "citation_correctness_pct": 41.0,
+    "unsupported_claim_rate_pct": 28.5,
+    "comparability_errors_count": 8,
+    "model_cost_usd": 0.08,
+    "human_labor_cost_usd": 119.17,
+    "total_cost_per_accepted_deliverable_usd": 119.25,
+    "data_status": "Hypothetical Model Assumptions with Empirical Timing"
+  },
+  "ATLAS Workbench": {
+    "one_time_cold_setup_minutes": 6.2,
+    "machine_synthesis_time_seconds": 6.2,
+    "machine_processing_time_minutes": 0.1,
+    "human_active_time_minutes": 18.0,
+    "total_elapsed_workflow_time_minutes": 18.1,
+    "numeric_accuracy_pct": 100.0,
+    "citation_correctness_pct": 100.0,
+    "unsupported_claim_rate_pct": 0.0,
+    "comparability_errors_count": 0,
+    "measured_live_api_cost_usd": 0.000104,
+    "theoretical_batch_model_cost_usd": 0.04,
+    "human_labor_cost_usd": 19.5,
+    "total_cost_per_accepted_deliverable_usd": 19.54,
+    "data_status": "Empirically Measured Pipeline Execution with Stated Economic Assumptions"
+  }
+}

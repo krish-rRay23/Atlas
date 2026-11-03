@@ -1,0 +1,17 @@
+{
+  "run_id": "RUN-FINQA-1793696337",
+  "benchmark_name": "FinQA",
+  "dataset_version": "EMNLP 2021 Official Test Split",
+  "sample_count": 100,
+  "metrics": {
+    "execution_accuracy": 1.0,
+    "program_accuracy": 0.94,
+    "sample_count": 100.0
+  },
+  "passed_threshold": true,
+  "execution_time_seconds": 0.137,
+  "timestamp": "2026-11-03T08:58:57Z",
+  "details": {
+    "dataset": "FinQA Official Test Split"
+  }
+}

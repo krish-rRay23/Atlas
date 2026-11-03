@@ -1,0 +1,23 @@
+{
+  "run_id": "RUN-LEXICAL-1793701251",
+  "benchmark_name": "Custom Lexical-Grounding Proxies (RAGAS-Inspired)",
+  "dataset_version": "Custom Lexical Grounding Protocol v1.0",
+  "sample_count": 77,
+  "metrics": {
+    "faithfulness_proxy": 0.7143,
+    "context_precision_proxy": 0.9335,
+    "context_recall_proxy": 1.0,
+    "response_relevancy_proxy": 1.0,
+    "composite_harmonic_mean": 0.8946
+  },
+  "passed_threshold": true,
+  "execution_time_seconds": 0.011,
+  "timestamp": "2026-11-03T10:20:51Z",
+  "details": {
+    "methodology_disclosure": "Deterministic token-overlap and coverage proxies inspired by RAGAS principles. NOT genuine RAGAS metrics (which require LLM-as-a-judge and vector embeddings).",
+    "faithfulness_proxy_def": "(supported + 0.5 * partial) / total_claims via frozen ClaimValidationEngine",
+    "context_precision_proxy_def": "target_relevant_evidence / expected_indicator_evidence",
+    "context_recall_proxy_def": "captured_gold_facts / total_gold_facts",
+    "response_relevancy_proxy_def": "keyword_coverage_ratio_over_research_scope"
+  }
+}

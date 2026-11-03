@@ -1,0 +1,20 @@
+{
+  "run_id": "RUN-INDOMAIN-1793696337",
+  "benchmark_name": "InDomainGold",
+  "dataset_version": "v1.0-official-2024",
+  "sample_count": 35,
+  "metrics": {
+    "overall_accuracy": 0.94,
+    "numeric_extraction_accuracy": 1.0,
+    "comparability_rule_accuracy": 1.0,
+    "claim_verification_accuracy": 0.8,
+    "total_samples": 35.0,
+    "passed_samples": 34.0
+  },
+  "passed_threshold": true,
+  "execution_time_seconds": 0.016,
+  "timestamp": "2026-11-03T08:58:57Z",
+  "details": {
+    "samples_evaluated": 35
+  }
+}

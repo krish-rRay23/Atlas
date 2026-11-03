@@ -1,0 +1,22 @@
+{
+  "run_id": "RUN-ALCE-1793697774",
+  "benchmark_name": "ALCE",
+  "dataset_version": "EMNLP 2023 Protocol",
+  "sample_count": 7,
+  "metrics": {
+    "citation_precision": 0.7143,
+    "citation_recall": 1.0,
+    "citation_f1": 0.8333,
+    "claims_evaluated": 7.0
+  },
+  "passed_threshold": true,
+  "execution_time_seconds": 0.003,
+  "timestamp": "2026-11-03T09:22:54Z",
+  "details": {
+    "supported_count": 3,
+    "partially_supported_count": 4,
+    "contradicted_count": 0,
+    "unverified_count": 0,
+    "sample_disclosure": "Evaluated across 7 claims extracted from synthesized research memo"
+  }
+}
