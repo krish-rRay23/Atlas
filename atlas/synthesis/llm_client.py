@@ -31,12 +31,12 @@ def sanitize_prompt(text: str, max_chars: int = 16000) -> str:
         r"(?i)ignore\s+(?:all\s+)?previous\s+instructions",
         r"(?i)disregard\s+(?:all\s+)?prior\s+instructions",
         r"(?i)you\s+are\s+now\s+in\s+developer\s+mode",
+        r"(?i)system\s*override\s*:",
         r"(?i)system\s*:\s*you\s+must",
-        r"(?i)<\s*script[^>]*>.*?<\s*/\s*script\s*>",
-        r"(?i)drop\s+table",
-        r"(?i)system\s+override",
         r"<\|im_start\|>",
         r"<\|im_end\|>",
+        r"(?i)<\s*script[^>]*>.*?<\s*/\s*script\s*>",
+        r"(?i)drop\s+table",
         r"(?i)bypass\s+safety\s+filter"
     ]
     for pattern in injection_patterns:

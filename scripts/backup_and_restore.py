@@ -165,3 +165,4 @@ if __name__ == "__main__":
         manifest_p = create_backup()
         verify_and_restore(manifest_p, Path("backups/test_restore_verification"))
         print("[+] Full online backup and recovery test cycle PASSED.")
+

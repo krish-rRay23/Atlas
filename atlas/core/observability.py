@@ -26,6 +26,15 @@ _metrics_accumulator = {
     "error_count": 0
 }
 
+def record_request_metric(endpoint: str, status_code: int, duration_ms: float):
+    """Record an API request into the in-memory telemetry accumulator."""
+    _metrics_accumulator["total_requests"] += 1
+    _metrics_accumulator["status_codes"][status_code] = _metrics_accumulator["status_codes"].get(status_code, 0) + 1
+    _metrics_accumulator["endpoints"][endpoint] = _metrics_accumulator["endpoints"].get(endpoint, 0) + 1
+    _metrics_accumulator["total_latency_ms"] += duration_ms
+    if status_code >= 400:
+        _metrics_accumulator["error_count"] += 1
+
 class StructuredLoggingMiddleware(BaseHTTPMiddleware):
     """ASGI Middleware: attaches correlation Request ID, measures latency, and emits structured JSON logs."""
     async def dispatch(self, request: Request, call_next):
@@ -86,15 +95,6 @@ class StructuredLoggingMiddleware(BaseHTTPMiddleware):
             logger.error(json.dumps(log_entry))
             raise
 
-def record_request_metric(endpoint: str, status_code: int, duration_ms: float):
-    """Programmatically record an API metric into the operational metrics accumulator."""
-    _metrics_accumulator["total_requests"] += 1
-    _metrics_accumulator["status_codes"][status_code] = _metrics_accumulator["status_codes"].get(status_code, 0) + 1
-    _metrics_accumulator["endpoints"][endpoint] = _metrics_accumulator["endpoints"].get(endpoint, 0) + 1
-    _metrics_accumulator["total_latency_ms"] += duration_ms
-    if status_code >= 400:
-        _metrics_accumulator["error_count"] += 1
-
 def get_system_metrics() -> Dict[str, Any]:
     """Compile application, operational database, and model metrics for operational dashboard."""
     tot_reqs = _metrics_accumulator["total_requests"]
@@ -142,3 +142,4 @@ def get_system_metrics() -> Dict[str, Any]:
             "total_tokens_consumed": total_in_tok + total_out_tok
         }
     }
+

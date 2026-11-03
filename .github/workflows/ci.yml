@@ -44,3 +44,4 @@ jobs:
       - name: Run Table Numerical Reasoning Gate
         run: |
           python -c "from atlas.evaluation.benchmarks import run_tatqa_eval; res = run_tatqa_eval(max_samples=25); print('TAT-QA Diagnostic Sample:', res['metrics'])"
+

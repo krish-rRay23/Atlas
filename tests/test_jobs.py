@@ -61,3 +61,4 @@ def test_list_jobs():
     jobs = JobService.list_jobs(limit=10)
     assert isinstance(jobs, list)
     assert len(jobs) > 0
+

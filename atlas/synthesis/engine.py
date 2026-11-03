@@ -5,10 +5,10 @@ grounded in verified evidence records, with explicit claim citations,
 comparability checks, and analytical vs factual separation.
 """
 
-import re
 import json
 import uuid
 import datetime
+import re
 from typing import Dict, Any, List, Optional
 import pandas as pd
 

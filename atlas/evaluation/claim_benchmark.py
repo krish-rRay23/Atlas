@@ -264,3 +264,4 @@ if __name__ == "__main__":
     print(f"Evaluated {res.sample_count} claims:")
     print(f"Accuracy: {res.metrics['overall_accuracy']*100:.2f}% | Precision: {res.metrics['precision']*100:.2f}% | Recall: {res.metrics['recall']*100:.2f}% | F1: {res.metrics['f1_score']:.4f}")
     print(f"False Positive Rate: {res.metrics['false_positive_rate']*100:.2f}% | Specificity: {res.metrics['specificity']*100:.2f}%")
+

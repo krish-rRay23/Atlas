@@ -17,11 +17,11 @@ _duckdb_write_lock = threading.Lock()
 
 def get_sqlite_conn() -> sqlite3.Connection:
     """Acquire a thread-safe connection to SQLite with row factory and foreign keys enabled."""
-    conn = sqlite3.connect(str(SQLITE_DB_PATH), check_same_thread=False, timeout=60.0)
+    conn = sqlite3.connect(str(SQLITE_DB_PATH), check_same_thread=False, timeout=30.0)
     conn.row_factory = sqlite3.Row
     conn.execute("PRAGMA foreign_keys = ON")
     conn.execute("PRAGMA journal_mode = WAL")  # Write-Ahead Logging for high concurrency
-    conn.execute("PRAGMA busy_timeout = 30000")  # 30s busy timeout
+    conn.execute("PRAGMA busy_timeout = 5000")  # 5s busy timeout
     return conn
 
 @contextmanager
@@ -300,16 +300,12 @@ def init_database():
     CREATE TABLE IF NOT EXISTS claim_revisions (
         revision_id TEXT PRIMARY KEY,
         claim_id TEXT NOT NULL,
-        memo_id TEXT,
-        original_text TEXT,
-        revised_text TEXT,
-        status TEXT,
-        previous_status TEXT,
-        new_status TEXT,
+        previous_status TEXT NOT NULL,
+        new_status TEXT NOT NULL,
         reviewer_id TEXT NOT NULL,
         reviewer_notes TEXT,
-        reviewed_at TEXT,
-        timestamp TEXT
+        timestamp TEXT NOT NULL,
+        FOREIGN KEY (claim_id) REFERENCES claim_validations (claim_id)
     )
     """)
 

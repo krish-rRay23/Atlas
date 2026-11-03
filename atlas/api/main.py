@@ -20,6 +20,7 @@ from atlas.evidence.ledger import EvidenceLedgerService
 from atlas.comparability.asiametric import AsiaMetricEngine
 from atlas.synthesis.engine import ResearchSynthesisEngine
 from atlas.evaluation.runner import run_all_benchmarks
+from atlas.evaluation.headline_benchmarks import HeadlineBenchmarkSuite
 from atlas.economics.calculator import EconomicsCalculator
 from atlas.sources.registry import OFFICIAL_SOURCES, OFFICIAL_INDICATORS
 from atlas.core.security import get_current_user, require_role, safe_path_join
@@ -423,6 +424,46 @@ def review_claim(
     }
 
 # --- BENCHMARKS & EVALUATION ---
+@app.get("/api/evaluation/headline")
+def get_headline_benchmarks():
+    """Get latest headline benchmark results for T²-RAGBench, FinanceMath, and AVeriTeC."""
+    summary_path = Path("data/evaluation/headline_benchmarks_summary.json")
+    if summary_path.exists():
+        with open(summary_path, "r", encoding="utf-8") as f:
+            return json.load(f)
+    suite = HeadlineBenchmarkSuite()
+    t2_res = suite.run_t2_ragbench(config="TAT-DQA", split="dev", max_samples=25, retrieval_strategy="hybrid")
+    fm_res = suite.run_financemath(split="test", max_samples=25)
+    av_res = suite.run_averitec(split="dev", max_samples=25)
+    return {
+        "t2_ragbench": t2_res.model_dump(),
+        "financemath": fm_res.model_dump(),
+        "averitec": av_res.model_dump()
+    }
+
+@app.post("/api/evaluation/headline/run")
+def trigger_headline_benchmark_run(
+    current_user: Dict[str, Any] = Depends(require_role(["admin"]))
+):
+    """Trigger full run of headline benchmarks (T²-RAGBench, FinanceMath, AVeriTeC)."""
+    suite = HeadlineBenchmarkSuite()
+    t2_res = suite.run_t2_ragbench(config="TAT-DQA", split="dev", max_samples=100, retrieval_strategy="hybrid")
+    fm_res = suite.run_financemath(split="test", max_samples=100)
+    av_res = suite.run_averitec(split="dev", max_samples=100)
+    reg_res = suite.run_internal_claim_regression()
+
+    summary = {
+        "t2_ragbench": t2_res.model_dump(),
+        "financemath": fm_res.model_dump(),
+        "averitec": av_res.model_dump(),
+        "internal_claim_regression": reg_res.model_dump()
+    }
+    summary_path = Path("data/evaluation/headline_benchmarks_summary.json")
+    with open(summary_path, "w", encoding="utf-8") as f:
+        json.dump(summary, f, indent=2)
+
+    return {"status": "completed", "summary": summary}
+
 @app.get("/api/evaluation/benchmarks")
 def get_benchmark_results():
     conn = get_sqlite_conn()

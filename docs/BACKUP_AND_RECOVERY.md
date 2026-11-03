@@ -66,3 +66,4 @@ ATLAS provides an automated single-command test cycle that performs backup, SHA-
 python scripts/backup_and_restore.py --action test-cycle
 ```
 Status: Verified and Passing (zero parity errors, 100% SHA-256 match).
+

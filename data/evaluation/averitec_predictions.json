@@ -1,0 +1,40 @@
+{
+  "run_id": "RUN-AVERITEC-1793710477",
+  "metrics": {
+    "verdict_accuracy": 0.58,
+    "macro_f1": 0.4303,
+    "total_claims": 100,
+    "latency_ms_per_claim": 1.75,
+    "estimated_cost_usd": 0.0
+  },
+  "per_class_breakdown": {
+    "Supported": {
+      "precision": 0.4667,
+      "recall": 0.3684,
+      "f1_score": 0.4118,
+      "f1": 0.4118,
+      "support": 19
+    },
+    "Refuted": {
+      "precision": 0.7377,
+      "recall": 0.7143,
+      "f1_score": 0.7258,
+      "f1": 0.7258,
+      "support": 63
+    },
+    "Not Enough Evidence": {
+      "precision": 0.1818,
+      "recall": 0.5714,
+      "f1_score": 0.2759,
+      "f1": 0.2759,
+      "support": 7
+    },
+    "Conflicting Evidence/Cherrypicking": {
+      "precision": 1.0,
+      "recall": 0.1818,
+      "f1_score": 0.3077,
+      "f1": 0.3077,
+      "support": 11
+    }
+  }
+}

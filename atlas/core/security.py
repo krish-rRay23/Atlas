@@ -12,7 +12,7 @@ import hashlib
 import secrets
 import urllib.parse
 from pathlib import Path
-from typing import Optional, List, Dict, Any, Tuple
+from typing import Optional, List, Dict, Any
 from fastapi import Header, HTTPException, Security, status, Depends
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 
@@ -135,3 +135,4 @@ def safe_path_join(base_dir: Path, untrusted_filename: str) -> Path:
         raise ValueError(f"Path traversal detected: {untrusted_filename} attempts escape from {base_dir}")
     
     return resolved
+

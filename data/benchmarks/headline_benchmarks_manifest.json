@@ -1,0 +1,39 @@
+{
+  "download_timestamp_utc": "2026-11-03T12:37:14.962005+00:00",
+  "benchmarks": {
+    "FinanceMath": {
+      "financemath_validation.json": {
+        "count": 200,
+        "sha256": "e22fd12cfcc75098a2636ae34def1369dd6500c78e5c24724bed71ac84f1a711"
+      },
+      "financemath_test.json": {
+        "count": 1000,
+        "sha256": "6af84886bbcfd03a59f415258941ef28ed272c13ee930810ebac73bc939939fa"
+      }
+    },
+    "AVeriTeC": {
+      "averitec_dev.parquet": {
+        "count": 500,
+        "sha256": "18e9397649d12f0a9b2e21b553c7b32e10b5cf58aff54c2a11e1ad6243af403d"
+      },
+      "averitec_train.parquet": {
+        "count": 3068,
+        "sha256": "41d08f99b3d3afbdbb81a655ccee23a4cddd3b4af4480100391e305300ee784f"
+      }
+    },
+    "T2-RAGBench": {
+      "t2_ragbench_tatdqa_dev.jsonl": {
+        "count": 1142,
+        "sha256": "ee53ad7b17a423be629394f23f60875c376c7343ed3660cd7ebf7483bdfb0f0b"
+      },
+      "t2_ragbench_tatdqa_test.jsonl": {
+        "count": 1144,
+        "sha256": "eb5e253778c8505b61b0718b1b474fadbf06edb150f98771d75ab688278e115b"
+      },
+      "t2_ragbench_finqa_dev.jsonl": {
+        "count": 883,
+        "sha256": "24048e3250d4178c7fb433aea21439dca23f62abbcbd00d415d9798902a544a5"
+      }
+    }
+  }
+}

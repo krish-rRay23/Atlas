@@ -1,0 +1,101 @@
+{
+  "run_id": "RUN-COMP-CLAIMS-1793710479",
+  "benchmark_name": "Comprehensive Factual Claim Validation Benchmark",
+  "dataset_version": "Stratified Evidence Claim Suite v2.0 (250 Samples)",
+  "sample_count": 250,
+  "metrics": {
+    "overall_accuracy": 0.932,
+    "precision": 0.9868,
+    "recall": 1.0,
+    "specificity": 0.9943,
+    "f1_score": 0.9934,
+    "false_positive_rate": 0.0057,
+    "false_negative_rate": 0.0,
+    "total_evaluated_claims": 250.0,
+    "correctly_classified_claims": 233.0
+  },
+  "passed_threshold": true,
+  "execution_time_seconds": 1.537,
+  "timestamp": "2026-11-03T12:54:39Z",
+  "details": {
+    "binary_counts": {
+      "true_positives": 75,
+      "false_positives": 1,
+      "true_negatives": 174,
+      "false_negatives": 0
+    },
+    "confusion_matrix": {
+      "supported": {
+        "supported": 61,
+        "contradicted": 0,
+        "unsupported": 0,
+        "missing_evidence": 0,
+        "unverified": 0,
+        "partially_supported": 14
+      },
+      "contradicted": {
+        "supported": 1,
+        "contradicted": 113,
+        "unsupported": 1,
+        "missing_evidence": 0,
+        "unverified": 0,
+        "partially_supported": 0
+      },
+      "unsupported": {
+        "supported": 0,
+        "contradicted": 1,
+        "unsupported": 14,
+        "missing_evidence": 0,
+        "unverified": 0,
+        "partially_supported": 0
+      },
+      "missing_evidence": {
+        "supported": 0,
+        "contradicted": 0,
+        "unsupported": 0,
+        "missing_evidence": 25,
+        "unverified": 0,
+        "partially_supported": 0
+      },
+      "unverified": {
+        "supported": 0,
+        "contradicted": 0,
+        "unsupported": 0,
+        "missing_evidence": 0,
+        "unverified": 20,
+        "partially_supported": 0
+      }
+    },
+    "category_breakdown": {
+      "supported_exact": {
+        "total": 75,
+        "correct": 61
+      },
+      "contradicted_magnitude": {
+        "total": 50,
+        "correct": 49
+      },
+      "contradicted_direction": {
+        "total": 40,
+        "correct": 39
+      },
+      "contradicted_universal": {
+        "total": 25,
+        "correct": 25
+      },
+      "missing_evidence": {
+        "total": 25,
+        "correct": 25
+      },
+      "unverified_id": {
+        "total": 20,
+        "correct": 20
+      },
+      "unsupported_divergence": {
+        "total": 15,
+        "correct": 14
+      }
+    },
+    "acceptance_gate": "PASSED: Precision >= 90% and Accuracy >= 85%"
+  }
+}

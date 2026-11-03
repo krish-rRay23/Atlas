@@ -52,3 +52,4 @@ def test_table_reasoner_direct_lookup(sample_table, sample_paragraphs):
     
     res = reasoner.answer_question("What was the account ownership in India in 2021?")
     assert "77.5" in res["answer"]
+

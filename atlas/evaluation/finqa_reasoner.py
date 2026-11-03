@@ -89,3 +89,4 @@ class FinQAReasoner:
             return f"add({top_nums[0]}, const_0)"
 
         return "add(const_0, const_0)"
+

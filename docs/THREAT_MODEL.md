@@ -47,3 +47,4 @@ ATLAS processes authoritative economic and financial inclusion observations acro
 ### C. Synthesis & Claim Validation Engine
 - **Threat**: Prompt injection manipulating numerical findings.
 - **Mitigation**: Comprehensive prompt sanitization stripping delimiter tokens (`<|im_start|>`) and instruction overrides; deterministic claim validator checking numerical values against observation intervals.
+

@@ -387,7 +387,6 @@ class AsiaMetricEngine:
         conn = get_sqlite_conn()
         cur = conn.cursor()
         assessments = []
-        insert_rows = []
 
         countries = ["IND", "IDN", "VNM", "THA", "PHL"]
         key_indicators = [
@@ -427,7 +426,14 @@ class AsiaMetricEngine:
                     asm = self.evaluate_pair(ind, cA, yA, ind, cB, yB)
                     assessments.append(asm)
 
-                    insert_rows.append((
+                    cur.execute("""
+                    INSERT OR REPLACE INTO comparability_assessments (
+                        assessment_id, indicator_code, country_a, country_b,
+                        classification, justification, rule_applied,
+                        unit_consistency, denominator_consistency, population_consistency,
+                        methodology_consistency, period_consistency
+                    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                    """, (
                         asm.assessment_id, asm.indicator_code, asm.country_a, asm.country_b,
                         asm.classification, asm.justification, asm.rule_applied,
                         1 if asm.unit_consistency else 0,
@@ -437,19 +443,8 @@ class AsiaMetricEngine:
                         1 if asm.period_consistency else 0
                     ))
 
-        try:
-            if insert_rows:
-                cur.executemany("""
-                INSERT OR REPLACE INTO comparability_assessments (
-                    assessment_id, indicator_code, country_a, country_b,
-                    classification, justification, rule_applied,
-                    unit_consistency, denominator_consistency, population_consistency,
-                    methodology_consistency, period_consistency
-                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-                """, insert_rows)
-                conn.commit()
-        finally:
-            conn.close()
+        conn.commit()
+        conn.close()
         return assessments
 
     def check_ranking_validity(self, indicator_code: str, country_iso_list: List[str]) -> Tuple[bool, List[str]]:

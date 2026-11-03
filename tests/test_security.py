@@ -82,3 +82,4 @@ def test_rbac_matrix():
     assert "approve_claims" in ROLES["reviewer"]["permissions"]
     assert "create_project" in ROLES["researcher"]["permissions"]
     assert "read" in ROLES["reader"]["permissions"]
+

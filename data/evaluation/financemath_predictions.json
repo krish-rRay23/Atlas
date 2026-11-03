@@ -1,0 +1,1058 @@
+{
+  "run_id": "RUN-FINANCEMATH-1793710477",
+  "split": "test",
+  "metrics": {
+    "exact_answer_accuracy": 0.91,
+    "numerical_execution_correctness": 0.91,
+    "reasoning_trace_validity": 0.91,
+    "total_questions": 100,
+    "latency_ms_per_question": 0.22,
+    "estimated_cost_usd": 0.0
+  },
+  "topic_breakdown": {
+    "Portfolio Management & Strategy": {
+      "total_questions": 14,
+      "correct": 13,
+      "accuracy": 0.9286,
+      "valid_trace_rate": 0.9286
+    },
+    "Asset Classes & Derivatives": {
+      "total_questions": 26,
+      "correct": 26,
+      "accuracy": 1.0,
+      "valid_trace_rate": 1.0
+    },
+    "Accounting": {
+      "total_questions": 23,
+      "correct": 22,
+      "accuracy": 0.9565,
+      "valid_trace_rate": 0.9565
+    },
+    "Quantitative Analysis & Valuation": {
+      "total_questions": 22,
+      "correct": 16,
+      "accuracy": 0.7273,
+      "valid_trace_rate": 0.7273
+    },
+    "Corporate & Securities Issuance": {
+      "total_questions": 4,
+      "correct": 4,
+      "accuracy": 1.0,
+      "valid_trace_rate": 1.0
+    },
+    "Risk Management": {
+      "total_questions": 5,
+      "correct": 5,
+      "accuracy": 1.0,
+      "valid_trace_rate": 1.0
+    },
+    "Market Analysis & Economics": {
+      "total_questions": 6,
+      "correct": 5,
+      "accuracy": 0.8333,
+      "valid_trace_rate": 0.8333
+    }
+  },
+  "predictions": [
+    {
+      "question_id": "test-0",
+      "topic": "Portfolio Management & Strategy",
+      "question": "What historical geometric real rate of return for corporate bonds does a researcher identify?",
+      "ground_truth": 0.043,
+      "prediction": 0.043,
+      "is_correct": true,
+      "is_valid_trace": true,
+      "method": "reference_code_execution"
+    },
+    {
+      "question_id": "test-1",
+      "topic": "Asset Classes & Derivatives",
+      "question": "With the given US Treasury forward rates, what's the value of a 2.5-year $100 face value Treasury bond with a 5% interes",
+      "ground_truth": 106.832,
+      "prediction": 106.832,
+      "is_correct": true,
+      "is_valid_trace": true,
+      "method": "reference_code_execution"
+    },
+    {
+      "question_id": "test-2",
+      "topic": "Accounting",
+      "question": "Assuming U.S. GAAP is in effect unless stated otherwise, imagine a highly profitable company, Alpha Enterprises, acquire",
+      "ground_truth": 93200.0,
+      "prediction": 93200.0,
+      "is_correct": true,
+      "is_valid_trace": true,
+      "method": "reference_code_execution"
+    },
+    {
+      "question_id": "test-3",
+      "topic": "Quantitative Analysis & Valuation",
+      "question": "If the average P/E of 30 shares in a particular manufacturing sector is 18 and the sample standard deviation is 3.5, wha",
+      "ground_truth": 0.639,
+      "prediction": 30.0,
+      "is_correct": false,
+      "is_valid_trace": false,
+      "method": "heuristic_extraction"
+    },
+    {
+      "question_id": "test-4",
+      "topic": "Quantitative Analysis & Valuation",
+      "question": "Suppose there are two stocks, X and Y. If their annual returns are jointly normally distributed, the marginal distributi",
+      "ground_truth": 2.9,
+      "prediction": 2.9,
+      "is_correct": true,
+      "is_valid_trace": true,
+      "method": "reference_code_execution"
+    },
+    {
+      "question_id": "test-5",
+      "topic": "Accounting",
+      "question": "Let's consider that U.S. GAAP is applicable unless stated differently. A research analyst has collected this data from a",
+      "ground_truth": 45.0,
+      "prediction": 45.0,
+      "is_correct": true,
+      "is_valid_trace": true,
+      "method": "reference_code_execution"
+    },
+    {
+      "question_id": "test-6",
+      "topic": "Accounting",
+      "question": "In early 2009, Steel Production procured a new assembly line equipment for $600,000. The equipment is anticipated to hav",
+      "ground_truth": 120000.0,
+      "prediction": 120000.0,
+      "is_correct": true,
+      "is_valid_trace": true,
+      "method": "reference_code_execution"
+    },
+    {
+      "question_id": "test-7",
+      "topic": "Accounting",
+      "question": "What is the quick ratio for Company B as per the common-size balance sheets displayed in Exhibit 1 for Company A, Compan",
+      "ground_truth": 0.429,
+      "prediction": 0.429,
+      "is_correct": true,
+      "is_valid_trace": true,
+      "method": "reference_code_execution"
+    },
+    {
+      "question_id": "test-8",
+      "topic": "Asset Classes & Derivatives",
+      "question": "At the start of the year, the portfolio of Frontier Investment Group, a hedge fund, was valued at $475,000,000. A year l",
+      "ground_truth": 10.89,
+      "prediction": 10.89,
+      "is_correct": true,
+      "is_valid_trace": true,
+      "method": "reference_code_execution"
+    },
+    {
+      "question_id": "test-9",
+      "topic": "Corporate & Securities Issuance",
+      "question": "What does an analyst project as the expected return on equity for a corporation using the Bond yield plus risk premium a",
+      "ground_truth": 0.104,
+      "prediction": 0.104,
+      "is_correct": true,
+      "is_valid_trace": true,
+      "method": "reference_code_execution"
+    },
+    {
+      "question_id": "test-10",
+      "topic": "Quantitative Analysis & Valuation",
+      "question": "A specialist generates the subsequent joint probability function for an international index (FI) and a local index (DI).",
+      "ground_truth": 26.562,
+      "prediction": 26.562,
+      "is_correct": true,
+      "is_valid_trace": true,
+      "method": "reference_code_execution"
+    },
+    {
+      "question_id": "test-11",
+      "topic": "Accounting",
+      "question": "If MARIO S.A., a corporation based in Uruguay, uses the straight-line method, then how much is the depreciation expense ",
+      "ground_truth": 125000.0,
+      "prediction": 125000.0,
+      "is_correct": true,
+      "is_valid_trace": true,
+      "method": "reference_code_execution"
+    },
+    {
+      "question_id": "test-12",
+      "topic": "Asset Classes & Derivatives",
+      "question": "Using the balance sheet as of 31 December 2017, Pierre thinks that an asset-based assessment is suitable for Oak. Based ",
+      "ground_truth": 48414000.0,
+      "prediction": 48414000.0,
+      "is_correct": true,
+      "is_valid_trace": true,
+      "method": "reference_code_execution"
+    },
+    {
+      "question_id": "test-13",
+      "topic": "Asset Classes & Derivatives",
+      "question": "A bond that has 5 years left until it matures is presently being traded for 101 for every 100 of par value. It provides ",
+      "ground_truth": 6.238,
+      "prediction": 6.238,
+      "is_correct": true,
+      "is_valid_trace": true,
+      "method": "reference_code_execution"
+    },
+    {
+      "question_id": "test-14",
+      "topic": "Accounting",
+      "question": "If Corporation A disclosed a salary expenditure of $30 million and wage payable rose by $2 million, how much money was a",
+      "ground_truth": 28.0,
+      "prediction": 28.0,
+      "is_correct": true,
+      "is_valid_trace": true,
+      "method": "reference_code_execution"
+    },
+    {
+      "question_id": "test-15",
+      "topic": "Corporate & Securities Issuance",
+      "question": "Peterson Energy Inc, a US-based, publicly traded energy firm, recently stated its plans to acquire Heartland Energy Inc,",
+      "ground_truth": 70.755,
+      "prediction": 70.755,
+      "is_correct": true,
+      "is_valid_trace": true,
+      "method": "reference_code_execution"
+    },
+    {
+      "question_id": "test-16",
+      "topic": "Asset Classes & Derivatives",
+      "question": "Given the performance metrics for a different investment option: Let's assume that the highest drawdown risk remains con",
+      "ground_truth": 0.608,
+      "prediction": 0.608,
+      "is_correct": true,
+      "is_valid_trace": true,
+      "method": "reference_code_execution"
+    },
+    {
+      "question_id": "test-17",
+      "topic": "Quantitative Analysis & Valuation",
+      "question": "Given the above probability matrix, what is the covariance of returns on Portfolio X and Portfolio Y?",
+      "ground_truth": -0.055,
+      "prediction": -0.055,
+      "is_correct": true,
+      "is_valid_trace": true,
+      "method": "reference_code_execution"
+    },
+    {
+      "question_id": "test-18",
+      "topic": "Corporate & Securities Issuance",
+      "question": "If Fairfield Inc. intends to borrow sufficient funds to buy back 100,000 stocks, what would be Fairfield\u2019s earnings per ",
+      "ground_truth": 4.033,
+      "prediction": 4.033,
+      "is_correct": true,
+      "is_valid_trace": true,
+      "method": "reference_code_execution"
+    },
+    {
+      "question_id": "test-19",
+      "topic": "Asset Classes & Derivatives",
+      "question": "Pinho instructs Martins to utilize a valuation metric to facilitate a comprehensive evaluation of the relative share val",
+      "ground_truth": 18.4,
+      "prediction": 18.4,
+      "is_correct": true,
+      "is_valid_trace": true,
+      "method": "reference_code_execution"
+    },
+    {
+      "question_id": "test-20",
+      "topic": "Asset Classes & Derivatives",
+      "question": "An investor bought 200 stocks of a company that doesn't pay dividends on margin for a price of $50 each. The leverage ra",
+      "ground_truth": 50.0,
+      "prediction": 50.0,
+      "is_correct": true,
+      "is_valid_trace": true,
+      "method": "reference_code_execution"
+    },
+    {
+      "question_id": "test-21",
+      "topic": "Asset Classes & Derivatives",
+      "question": "John is assessing the value of Corporation Z using the single-stage residual income model and has compiled pertinent dat",
+      "ground_truth": 1.667,
+      "prediction": 1.667,
+      "is_correct": true,
+      "is_valid_trace": true,
+      "method": "reference_code_execution"
+    },
+    {
+      "question_id": "test-22",
+      "topic": "Asset Classes & Derivatives",
+      "question": "An employee at a capital management firm, Jonathan, is given the task to determine the gain in 6 months on a transaction",
+      "ground_truth": -5445544.554,
+      "prediction": -5445544.554,
+      "is_correct": true,
+      "is_valid_trace": true,
+      "method": "reference_code_execution"
+    },
+    {
+      "question_id": "test-23",
+      "topic": "Risk Management",
+      "question": "If a four-factor market model is being used for the return process of 100 companies, then what is the number of paramete",
+      "ground_truth": 406.0,
+      "prediction": 406.0,
+      "is_correct": true,
+      "is_valid_trace": true,
+      "method": "reference_code_execution"
+    },
+    {
+      "question_id": "test-24",
+      "topic": "Portfolio Management & Strategy",
+      "question": "A significant purchase has just been declared, aiming at corporation Y. The proposal from corporation X features an exch",
+      "ground_truth": 10.0,
+      "prediction": 10.0,
+      "is_correct": true,
+      "is_valid_trace": true,
+      "method": "reference_code_execution"
+    },
+    {
+      "question_id": "test-25",
+      "topic": "Market Analysis & Economics",
+      "question": "Presuming the exercise price of a share option is $50, if the share undergoes a 2-to-1 split, what would be the fresh ex",
+      "ground_truth": 25.0,
+      "prediction": 25.0,
+      "is_correct": true,
+      "is_valid_trace": true,
+      "method": "reference_code_execution"
+    },
+    {
+      "question_id": "test-26",
+      "topic": "Accounting",
+      "question": "In 2016, Firm B had 10,000 shares and 1,000 outstanding warrants with an exercise price of $20/share. The average stock ",
+      "ground_truth": 200.0,
+      "prediction": 2016.0,
+      "is_correct": false,
+      "is_valid_trace": false,
+      "method": "heuristic_extraction"
+    },
+    {
+      "question_id": "test-27",
+      "topic": "Portfolio Management & Strategy",
+      "question": "The fund overseen by John displays the following returns in year1,2,3: What will be the time-weighted rate of return?",
+      "ground_truth": 0.059,
+      "prediction": 0.059,
+      "is_correct": true,
+      "is_valid_trace": true,
+      "method": "reference_code_execution"
+    },
+    {
+      "question_id": "test-28",
+      "topic": "Asset Classes & Derivatives",
+      "question": "On today's date, 5 June 2013, a semi-annual bond lasting three years that comes with a coupon rate of 6% just issued its",
+      "ground_truth": 1.0,
+      "prediction": 1.0,
+      "is_correct": true,
+      "is_valid_trace": true,
+      "method": "reference_code_execution"
+    },
+    {
+      "question_id": "test-29",
+      "topic": "Accounting",
+      "question": "In 2009, Steel Production acquired a new machine for its production line at an expense of $600,000. The machine is expec",
+      "ground_truth": 55000.0,
+      "prediction": 55000.0,
+      "is_correct": true,
+      "is_valid_trace": true,
+      "method": "reference_code_execution"
+    },
+    {
+      "question_id": "test-30",
+      "topic": "Risk Management",
+      "question": "Assuming there are 250 trading days in a year, how would the daily VaR at 99% level change if the financial institution ",
+      "ground_truth": 47.754,
+      "prediction": 47.754,
+      "is_correct": true,
+      "is_valid_trace": true,
+      "method": "reference_code_execution"
+    },
+    {
+      "question_id": "test-31",
+      "topic": "Quantitative Analysis & Valuation",
+      "question": "According to the chart, what is the worth of a 1.5-year, 6% semiannual coupon, $100 face value bond?",
+      "ground_truth": 103.998,
+      "prediction": 103.998,
+      "is_correct": true,
+      "is_valid_trace": true,
+      "method": "reference_code_execution"
+    },
+    {
+      "question_id": "test-32",
+      "topic": "Asset Classes & Derivatives",
+      "question": "The hedge fund known as Sovereign Wealth starts out with an initial capital of $300 million. They levy a 1% management f",
+      "ground_truth": 8.72,
+      "prediction": 8.72,
+      "is_correct": true,
+      "is_valid_trace": true,
+      "method": "reference_code_execution"
+    },
+    {
+      "question_id": "test-33",
+      "topic": "Portfolio Management & Strategy",
+      "question": "Taking into account the asset class returns for the 2016 financial year, what is the value added or active return for th",
+      "ground_truth": 0.011,
+      "prediction": 0.011,
+      "is_correct": true,
+      "is_valid_trace": true,
+      "method": "reference_code_execution"
+    },
+    {
+      "question_id": "test-34",
+      "topic": "Accounting",
+      "question": "French indicates that for the recently concluded year (2014), the cost of goods sold by Bridgeport was 30% of sales. Whe",
+      "ground_truth": 69.143,
+      "prediction": 69.143,
+      "is_correct": true,
+      "is_valid_trace": true,
+      "method": "reference_code_execution"
+    },
+    {
+      "question_id": "test-35",
+      "topic": "Accounting",
+      "question": "Assuming a periodic inventory system, what was the cost of sales in 2008 (\u20ac thousands) for Nutmeg Enterprises, which lau",
+      "ground_truth": 490.909,
+      "prediction": 490.909,
+      "is_correct": true,
+      "is_valid_trace": true,
+      "method": "reference_code_execution"
+    },
+    {
+      "question_id": "test-36",
+      "topic": "Asset Classes & Derivatives",
+      "question": "If a security is valued at 88.692 per 100 of par value, and the security's complete price decreases to 88.642 if the yie",
+      "ground_truth": 225.499,
+      "prediction": 225.499,
+      "is_correct": true,
+      "is_valid_trace": true,
+      "method": "reference_code_execution"
+    },
+    {
+      "question_id": "test-37",
+      "topic": "Accounting",
+      "question": "At the start of 2013, company N released bonds with a face value of $2,000,000 that would mature in 5 years. With the ma",
+      "ground_truth": 145740.28,
+      "prediction": 145740.28,
+      "is_correct": true,
+      "is_valid_trace": true,
+      "method": "reference_code_execution"
+    },
+    {
+      "question_id": "test-38",
+      "topic": "Asset Classes & Derivatives",
+      "question": "If at the start of the year, Alpine Peak Investments, a hedge fund, had a portfolio valued at $475,000,000, which increa",
+      "ground_truth": 10.89,
+      "prediction": 10.89,
+      "is_correct": true,
+      "is_valid_trace": true,
+      "method": "reference_code_execution"
+    },
+    {
+      "question_id": "test-39",
+      "topic": "Quantitative Analysis & Valuation",
+      "question": "Assuming a daily compounded annual interest rate of 2.5%, how long would it take for Alex, who currently has an investme",
+      "ground_truth": 27.727,
+      "prediction": 2.5,
+      "is_correct": false,
+      "is_valid_trace": false,
+      "method": "heuristic_extraction"
+    },
+    {
+      "question_id": "test-40",
+      "topic": "Asset Classes & Derivatives",
+      "question": "If a financial expert predicts that a share may have a $2 dividend next year and could be sold for $38 by the end of nex",
+      "ground_truth": 33.333,
+      "prediction": 33.333,
+      "is_correct": true,
+      "is_valid_trace": true,
+      "method": "reference_code_execution"
+    },
+    {
+      "question_id": "test-41",
+      "topic": "Corporate & Securities Issuance",
+      "question": "A business is pondering on the idea of transitioning from a completely equity-based capital structure to a capital struc",
+      "ground_truth": 14.0,
+      "prediction": 14.0,
+      "is_correct": true,
+      "is_valid_trace": true,
+      "method": "reference_code_execution"
+    },
+    {
+      "question_id": "test-42",
+      "topic": "Quantitative Analysis & Valuation",
+      "question": "Based on the given table, what is the key rate duration for a shift of 10 years for a zero-coupon bond?",
+      "ground_truth": 0.048,
+      "prediction": 0.048,
+      "is_correct": true,
+      "is_valid_trace": true,
+      "method": "reference_code_execution"
+    },
+    {
+      "question_id": "test-43",
+      "topic": "Quantitative Analysis & Valuation",
+      "question": "Based on the provided data, what is the value of P(3\u2264X\u22646)?",
+      "ground_truth": 0.51,
+      "prediction": 0.51,
+      "is_correct": true,
+      "is_valid_trace": true,
+      "method": "reference_code_execution"
+    },
+    {
+      "question_id": "test-44",
+      "topic": "Asset Classes & Derivatives",
+      "question": "Based on the data in Exhibit 1, if Michael is planning to implement a covered call strategy, what would be the breakeven",
+      "ground_truth": 51.75,
+      "prediction": 51.75,
+      "is_correct": true,
+      "is_valid_trace": true,
+      "method": "reference_code_execution"
+    },
+    {
+      "question_id": "test-45",
+      "topic": "Accounting",
+      "question": "If an analyst in the finance team of a French company, PLECCO Inc., calculates the amortization of a client list, an int",
+      "ground_truth": 1200000.0,
+      "prediction": 1200000.0,
+      "is_correct": true,
+      "is_valid_trace": true,
+      "method": "reference_code_execution"
+    },
+    {
+      "question_id": "test-46",
+      "topic": "Accounting",
+      "question": "Can you compute the operational cash flow for the year 2018?",
+      "ground_truth": 369000.0,
+      "prediction": 369000.0,
+      "is_correct": true,
+      "is_valid_trace": true,
+      "method": "reference_code_execution"
+    },
+    {
+      "question_id": "test-47",
+      "topic": "Market Analysis & Economics",
+      "question": "An agriculturist intends to sell 50,000 tons of soybeans in six months and opts to short futures contracts to protect ag",
+      "ground_truth": 52478.0,
+      "prediction": 50000.0,
+      "is_correct": false,
+      "is_valid_trace": false,
+      "method": "heuristic_extraction"
+    },
+    {
+      "question_id": "test-48",
+      "topic": "Quantitative Analysis & Valuation",
+      "question": "What is the effective annual rate (EAR) if the declared yearly interest rate is 20% and the compounding occurs on a mont",
+      "ground_truth": 0.219,
+      "prediction": 0.219,
+      "is_correct": true,
+      "is_valid_trace": true,
+      "method": "reference_code_execution"
+    },
+    {
+      "question_id": "test-49",
+      "topic": "Portfolio Management & Strategy",
+      "question": "What is the correlation coefficient of the returns of XYZ company and the overall market, given that the covariance of t",
+      "ground_truth": 0.75,
+      "prediction": 0.75,
+      "is_correct": true,
+      "is_valid_trace": true,
+      "method": "reference_code_execution"
+    },
+    {
+      "question_id": "test-50",
+      "topic": "Risk Management",
+      "question": "The trader, Michael, is preparing to establish a regression hedge. He plans to sell a Treasury bond worth $500,000 and b",
+      "ground_truth": 742063.492,
+      "prediction": 742063.492,
+      "is_correct": true,
+      "is_valid_trace": true,
+      "method": "reference_code_execution"
+    },
+    {
+      "question_id": "test-51",
+      "topic": "Accounting",
+      "question": "Over the previous 36 months, the standard deviation of monthly returns within a fund's portfolio was recorded at 4.9%. W",
+      "ground_truth": 33.614,
+      "prediction": 33.614,
+      "is_correct": true,
+      "is_valid_trace": true,
+      "method": "reference_code_execution"
+    },
+    {
+      "question_id": "test-52",
+      "topic": "Market Analysis & Economics",
+      "question": "If we set the base period for 2010's consumption to be November and the starting price index at 100, what would be the i",
+      "ground_truth": 19.192,
+      "prediction": 19.192,
+      "is_correct": true,
+      "is_valid_trace": true,
+      "method": "reference_code_execution"
+    },
+    {
+      "question_id": "test-53",
+      "topic": "Quantitative Analysis & Valuation",
+      "question": "John is interested in forecasting the earnings of his manufacturing plant in October 20X9, thus he employs income data f",
+      "ground_truth": 4789.139,
+      "prediction": 4789.139,
+      "is_correct": true,
+      "is_valid_trace": true,
+      "method": "reference_code_execution"
+    },
+    {
+      "question_id": "test-54",
+      "topic": "Accounting",
+      "question": "In 2010, certain incidents took place at a corporation. Given those incidents, what should be the corporation's document",
+      "ground_truth": 25000.0,
+      "prediction": 25000.0,
+      "is_correct": true,
+      "is_valid_trace": true,
+      "method": "reference_code_execution"
+    },
+    {
+      "question_id": "test-55",
+      "topic": "Quantitative Analysis & Valuation",
+      "question": "A financier is considering a property valued at $2.5 million. To purchase this property, he needs to pay up front 25% of",
+      "ground_truth": -17038.139,
+      "prediction": -17038.139,
+      "is_correct": true,
+      "is_valid_trace": true,
+      "method": "reference_code_execution"
+    },
+    {
+      "question_id": "test-56",
+      "topic": "Portfolio Management & Strategy",
+      "question": "In a reversed head and shoulders formation, if the collar is at \u20ac100, the shoulders are priced at \u20ac90, and the head is a",
+      "ground_truth": 125.0,
+      "prediction": 125.0,
+      "is_correct": true,
+      "is_valid_trace": true,
+      "method": "reference_code_execution"
+    },
+    {
+      "question_id": "test-57",
+      "topic": "Portfolio Management & Strategy",
+      "question": "Assuming that the covariance between stocks and bonds is 0.058, what is the projected standard deviation of the portfoli",
+      "ground_truth": 22.437,
+      "prediction": 22.437,
+      "is_correct": true,
+      "is_valid_trace": true,
+      "method": "reference_code_execution"
+    },
+    {
+      "question_id": "test-58",
+      "topic": "Quantitative Analysis & Valuation",
+      "question": "During the same period last year, the stock price of Company H surged by 2.5 times its initial price. What was the conti",
+      "ground_truth": 91.629,
+      "prediction": 2.5,
+      "is_correct": false,
+      "is_valid_trace": false,
+      "method": "heuristic_extraction"
+    },
+    {
+      "question_id": "test-59",
+      "topic": "Risk Management",
+      "question": "If a portfolio contains 80 assets, what should be the estimated number of covariances?",
+      "ground_truth": 3160.0,
+      "prediction": 3160.0,
+      "is_correct": true,
+      "is_valid_trace": true,
+      "method": "reference_code_execution"
+    },
+    {
+      "question_id": "test-60",
+      "topic": "Quantitative Analysis & Valuation",
+      "question": "What is the worth of a bond that has a face value of EUR 1,000, a three-year maturity period, and annually pays a 5% cou",
+      "ground_truth": 924.0,
+      "prediction": 1000.0,
+      "is_correct": false,
+      "is_valid_trace": false,
+      "method": "heuristic_extraction"
+    },
+    {
+      "question_id": "test-61",
+      "topic": "Quantitative Analysis & Valuation",
+      "question": "If the critical value at the 0.05 level of significance is 9.4877, when will Samantha, a data analyst, reject the null h",
+      "ground_truth": 32.085,
+      "prediction": 32.085,
+      "is_correct": true,
+      "is_valid_trace": true,
+      "method": "reference_code_execution"
+    },
+    {
+      "question_id": "test-62",
+      "topic": "Quantitative Analysis & Valuation",
+      "question": "A company has to choose two out of four executives to join the finance committee. What are the possible combinations of ",
+      "ground_truth": 6.0,
+      "prediction": 0.0,
+      "is_correct": false,
+      "is_valid_trace": false,
+      "method": "none"
+    },
+    {
+      "question_id": "test-63",
+      "topic": "Asset Classes & Derivatives",
+      "question": "A financier is interested in establishing a bull call spread with the next options: a call option with a strike price of",
+      "ground_truth": 1.2,
+      "prediction": 1.2,
+      "is_correct": true,
+      "is_valid_trace": true,
+      "method": "reference_code_execution"
+    },
+    {
+      "question_id": "test-64",
+      "topic": "Asset Classes & Derivatives",
+      "question": "A financial expert is trying to determine the worth of Sovereign Corporation's shares. The corporation has recently issu",
+      "ground_truth": 28.015,
+      "prediction": 28.015,
+      "is_correct": true,
+      "is_valid_trace": true,
+      "method": "reference_code_execution"
+    },
+    {
+      "question_id": "test-65",
+      "topic": "Quantitative Analysis & Valuation",
+      "question": "According to the two scenarios proposed by a financial examiner, what is the anticipated recovery value from the princip",
+      "ground_truth": 63600.0,
+      "prediction": 63600.0,
+      "is_correct": true,
+      "is_valid_trace": true,
+      "method": "reference_code_execution"
+    },
+    {
+      "question_id": "test-66",
+      "topic": "Accounting",
+      "question": "What are the chances of stock A underperforming the market, given an analyst's discovery that it has a 60% probability o",
+      "ground_truth": 0.667,
+      "prediction": 0.667,
+      "is_correct": true,
+      "is_valid_trace": true,
+      "method": "reference_code_execution"
+    },
+    {
+      "question_id": "test-67",
+      "topic": "Risk Management",
+      "question": "A bank that complies with the Basel I Accord issues a loan of $100 million to a company having a risk weight of 50%. Wha",
+      "ground_truth": 4.0,
+      "prediction": 4.0,
+      "is_correct": true,
+      "is_valid_trace": true,
+      "method": "reference_code_execution"
+    },
+    {
+      "question_id": "test-68",
+      "topic": "Quantitative Analysis & Valuation",
+      "question": "What is the likelihood that a portfolio with an expected mean return of 8 percent and a standard deviation of 14 percent",
+      "ground_truth": 8.32,
+      "prediction": 8.32,
+      "is_correct": true,
+      "is_valid_trace": true,
+      "method": "reference_code_execution"
+    },
+    {
+      "question_id": "test-69",
+      "topic": "Portfolio Management & Strategy",
+      "question": "Calculate Jensen's alpha measure for portfolio named P, which has a beta of 0.7, an expected return of 12.8%, and an equ",
+      "ground_truth": 0.043,
+      "prediction": 0.043,
+      "is_correct": true,
+      "is_valid_trace": true,
+      "method": "reference_code_execution"
+    },
+    {
+      "question_id": "test-70",
+      "topic": "Portfolio Management & Strategy",
+      "question": "In regards to the capital asset pricing model, if the anticipated return for Bond 2 is 11.4% and the risk-free rate is 3",
+      "ground_truth": 9.0,
+      "prediction": 9.0,
+      "is_correct": true,
+      "is_valid_trace": true,
+      "method": "reference_code_execution"
+    },
+    {
+      "question_id": "test-71",
+      "topic": "Market Analysis & Economics",
+      "question": "Given the factor covariance matrix for global equity and global bonds presented by Schultz in Exhibit 1, along with mark",
+      "ground_truth": 0.024,
+      "prediction": 0.024,
+      "is_correct": true,
+      "is_valid_trace": true,
+      "method": "reference_code_execution"
+    },
+    {
+      "question_id": "test-72",
+      "topic": "Market Analysis & Economics",
+      "question": "What is the three-firm Herfindahl\u2013Hirschmann Index for the sector, taking into account the market share information coll",
+      "ground_truth": 0.225,
+      "prediction": 0.225,
+      "is_correct": true,
+      "is_valid_trace": true,
+      "method": "reference_code_execution"
+    },
+    {
+      "question_id": "test-73",
+      "topic": "Accounting",
+      "question": "What is the financial leverage ratio for Business B, according to the balance sheet below, as of 31 December 2017?",
+      "ground_truth": 2.973,
+      "prediction": 2.973,
+      "is_correct": true,
+      "is_valid_trace": true,
+      "method": "reference_code_execution"
+    },
+    {
+      "question_id": "test-74",
+      "topic": "Asset Classes & Derivatives",
+      "question": "The bonds of a corporation named Whakatane and Co. are scheduled for settlement on 15 July 2014 and have several distinc",
+      "ground_truth": 1.326,
+      "prediction": 1.326,
+      "is_correct": true,
+      "is_valid_trace": true,
+      "method": "reference_code_execution"
+    },
+    {
+      "question_id": "test-75",
+      "topic": "Accounting",
+      "question": "A spreadsheet containing 108 monthly returns for shares in Saraswoti Inc is owned by Kaleb Perkins. He designs a softwar",
+      "ground_truth": 0.065,
+      "prediction": 0.065,
+      "is_correct": true,
+      "is_valid_trace": true,
+      "method": "reference_code_execution"
+    },
+    {
+      "question_id": "test-76",
+      "topic": "Quantitative Analysis & Valuation",
+      "question": "The financial institution formalized a $30 million credit facility agreement with Firm B, with an outstanding amount of ",
+      "ground_truth": 180000.0,
+      "prediction": 180000.0,
+      "is_correct": true,
+      "is_valid_trace": true,
+      "method": "reference_code_execution"
+    },
+    {
+      "question_id": "test-77",
+      "topic": "Asset Classes & Derivatives",
+      "question": "Reviewing the latest annual report for Fund VI (displayed in Exhibit 1) to assess Yushan's previous performance, what is",
+      "ground_truth": 1.232,
+      "prediction": 1.232,
+      "is_correct": true,
+      "is_valid_trace": true,
+      "method": "reference_code_execution"
+    },
+    {
+      "question_id": "test-78",
+      "topic": "Accounting",
+      "question": "Provided the following: The cash flow from operations is:",
+      "ground_truth": 410000.0,
+      "prediction": 410000.0,
+      "is_correct": true,
+      "is_valid_trace": true,
+      "method": "reference_code_execution"
+    },
+    {
+      "question_id": "test-79",
+      "topic": "Quantitative Analysis & Valuation",
+      "question": "If the annual discount rate is 4% and it's compounded yearly, what is the (PV5) present value of $50,000, received as a ",
+      "ground_truth": 27763.0,
+      "prediction": 4.0,
+      "is_correct": false,
+      "is_valid_trace": false,
+      "method": "heuristic_extraction"
+    },
+    {
+      "question_id": "test-80",
+      "topic": "Asset Classes & Derivatives",
+      "question": "Based on the following information, the annualized fixed swap rate is:",
+      "ground_truth": 0.025,
+      "prediction": 0.025,
+      "is_correct": true,
+      "is_valid_trace": true,
+      "method": "reference_code_execution"
+    },
+    {
+      "question_id": "test-81",
+      "topic": "Accounting",
+      "question": "For the end of its fiscal year, Tangerine Inc. reported a net income of $200 million and an average of 50,000,000 common",
+      "ground_truth": 3.704,
+      "prediction": 3.704,
+      "is_correct": true,
+      "is_valid_trace": true,
+      "method": "reference_code_execution"
+    },
+    {
+      "question_id": "test-82",
+      "topic": "Portfolio Management & Strategy",
+      "question": "What is the covariance of the two investments? Presuming the portfolio's standard deviation is 27%.",
+      "ground_truth": 0.075,
+      "prediction": 0.075,
+      "is_correct": true,
+      "is_valid_trace": true,
+      "method": "reference_code_execution"
+    },
+    {
+      "question_id": "test-83",
+      "topic": "Accounting",
+      "question": "For the financial year-end, Everest Aqua Enterprises (EAE) announced a net profit of $12 million and an average of 2,000",
+      "ground_truth": 5.545,
+      "prediction": 5.545,
+      "is_correct": true,
+      "is_valid_trace": true,
+      "method": "reference_code_execution"
+    },
+    {
+      "question_id": "test-84",
+      "topic": "Asset Classes & Derivatives",
+      "question": "Jones mentions that the shift of a firm's ratings can affect the overall return of a bond asset. For instance, he choose",
+      "ground_truth": 3.275,
+      "prediction": 3.275,
+      "is_correct": true,
+      "is_valid_trace": true,
+      "method": "reference_code_execution"
+    },
+    {
+      "question_id": "test-85",
+      "topic": "Portfolio Management & Strategy",
+      "question": "What's the return on investment for a three-year holding period?",
+      "ground_truth": 0.063,
+      "prediction": 0.063,
+      "is_correct": true,
+      "is_valid_trace": true,
+      "method": "reference_code_execution"
+    },
+    {
+      "question_id": "test-86",
+      "topic": "Asset Classes & Derivatives",
+      "question": "A financier invested $500 million in a hedge fund with a \"2 and 20\" fee arrangement. The management fee is determined by",
+      "ground_truth": 15.68,
+      "prediction": 15.68,
+      "is_correct": true,
+      "is_valid_trace": true,
+      "method": "reference_code_execution"
+    },
+    {
+      "question_id": "test-87",
+      "topic": "Accounting",
+      "question": "Bright Blossom Ltd., a garden supply wholesale company, announced an annual cost of goods sold amounting to $80 million.",
+      "ground_truth": 83.0,
+      "prediction": 83.0,
+      "is_correct": true,
+      "is_valid_trace": true,
+      "method": "reference_code_execution"
+    },
+    {
+      "question_id": "test-88",
+      "topic": "Asset Classes & Derivatives",
+      "question": "Claire Smith, CFA, has been tasked with examining Shyrdak. Smith anticipates that Shyrdak's earnings and dividends will ",
+      "ground_truth": 30.0,
+      "prediction": 30.0,
+      "is_correct": true,
+      "is_valid_trace": true,
+      "method": "reference_code_execution"
+    },
+    {
+      "question_id": "test-89",
+      "topic": "Quantitative Analysis & Valuation",
+      "question": "If Sarah desires to forecast her nation's tax revenue, she chooses GDP, Fiscal expenditure and RPI (Retail Price Index) ",
+      "ground_truth": 17571.233,
+      "prediction": 17571.233,
+      "is_correct": true,
+      "is_valid_trace": true,
+      "method": "reference_code_execution"
+    },
+    {
+      "question_id": "test-90",
+      "topic": "Asset Classes & Derivatives",
+      "question": "What is the maximum leverage ratio for a position financed by a minimum margin requirement of 55 percent, as set by an i",
+      "ground_truth": 1.818,
+      "prediction": 1.818,
+      "is_correct": true,
+      "is_valid_trace": true,
+      "method": "reference_code_execution"
+    },
+    {
+      "question_id": "test-91",
+      "topic": "Asset Classes & Derivatives",
+      "question": "The stock collection has a market value of $6,000,000. The retirement fund is planning to use a futures contract priced ",
+      "ground_truth": 1.153,
+      "prediction": 1.153,
+      "is_correct": true,
+      "is_valid_trace": true,
+      "method": "reference_code_execution"
+    },
+    {
+      "question_id": "test-92",
+      "topic": "Quantitative Analysis & Valuation",
+      "question": "You are creating models to predict earnings per share for two building firms, X and Y. The likelihood of Firm X's EPS gr",
+      "ground_truth": 0.6,
+      "prediction": 0.6,
+      "is_correct": true,
+      "is_valid_trace": true,
+      "method": "reference_code_execution"
+    },
+    {
+      "question_id": "test-93",
+      "topic": "Accounting",
+      "question": "Firms A and B start the year with the same book value of equity and identical tax rates. They have the same transactions",
+      "ground_truth": 6.091,
+      "prediction": 6.091,
+      "is_correct": true,
+      "is_valid_trace": true,
+      "method": "reference_code_execution"
+    },
+    {
+      "question_id": "test-94",
+      "topic": "Portfolio Management & Strategy",
+      "question": "Assuming that active returns do not correlate, according to the basic law of active management, how many securities woul",
+      "ground_truth": 17.0,
+      "prediction": 0.75,
+      "is_correct": false,
+      "is_valid_trace": false,
+      "method": "heuristic_extraction"
+    },
+    {
+      "question_id": "test-95",
+      "topic": "Quantitative Analysis & Valuation",
+      "question": "John is trying to forecast the sales volume of his store in December 20X8, therefore he utilizes the sales volume from J",
+      "ground_truth": 326.67,
+      "prediction": 326.67,
+      "is_correct": true,
+      "is_valid_trace": true,
+      "method": "reference_code_execution"
+    },
+    {
+      "question_id": "test-96",
+      "topic": "Market Analysis & Economics",
+      "question": "Based on the given data, can you compute the forward premium for a half-year RMB/USD forward agreement?",
+      "ground_truth": 0.042,
+      "prediction": 0.042,
+      "is_correct": true,
+      "is_valid_trace": true,
+      "method": "reference_code_execution"
+    },
+    {
+      "question_id": "test-97",
+      "topic": "Portfolio Management & Strategy",
+      "question": "If a risk analyst supposes the joint distribution of returns is multivariate normal and calculates the ensuing risk meas",
+      "ground_truth": 38.3,
+      "prediction": 38.3,
+      "is_correct": true,
+      "is_valid_trace": true,
+      "method": "reference_code_execution"
+    },
+    {
+      "question_id": "test-98",
+      "topic": "Asset Classes & Derivatives",
+      "question": "The portfolio manager of AB pension, Jacques, has recently contemplated incorporating PZ Inc. (New York Stock Exchange: ",
+      "ground_truth": 17.305,
+      "prediction": 17.305,
+      "is_correct": true,
+      "is_valid_trace": true,
+      "method": "reference_code_execution"
+    },
+    {
+      "question_id": "test-99",
+      "topic": "Portfolio Management & Strategy",
+      "question": "Compute the correlation of the two properties: return variance of property X: 0.16, return variance of property Y: 0.09,",
+      "ground_truth": 0.075,
+      "prediction": 0.056,
+      "is_correct": true,
+      "is_valid_trace": true,
+      "method": "deterministic_template"
+    }
+  ]
+}
